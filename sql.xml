@@ -54,8 +54,7 @@
 <table x="202" y="555" name="proposition">
 <row name="id" null="1" autoincrement="1">
 <datatype>INTEGER</datatype>
-<default>NULL</default><relation table="prop_votes" row="pid" />
-</row>
+<default>NULL</default></row>
 <row name="proposition_number" null="1" autoincrement="0">
 <datatype>CHAR(50)</datatype>
 <default>NULL</default></row>
@@ -70,9 +69,7 @@
 <table x="201" y="352" name="voters_of_america">
 <row name="SSN" null="1" autoincrement="0">
 <datatype>INTEGER</datatype>
-<default>NULL</default><relation table="prop_votes" row="voa_id" />
-<relation table="candidate_votes" row="id" />
-</row>
+<default>NULL</default></row>
 <row name="full_name" null="1" autoincrement="0">
 <datatype>VARCHAR(50)</datatype>
 <default>NULL</default></row>
@@ -99,19 +96,22 @@
 <default>NULL</default></row>
 <row name="voa_id" null="1" autoincrement="0">
 <datatype>INT</datatype>
-<default>NULL</default></row>
+<default>NULL</default><relation table="voters_of_america" row="SSN" />
+</row>
 <row name="pid" null="1" autoincrement="0">
 <datatype>INT</datatype>
-<default>NULL</default></row>
+<default>NULL</default><relation table="proposition" row="id" />
+</row>
 <key type="PRIMARY" name="">
 <part>pid</part>
 <part>voa_id</part>
 </key>
 </table>
 <table x="696" y="216" name="candidate_votes">
-<row name="id" null="1" autoincrement="1">
+<row name="id" null="1" autoincrement="0">
 <datatype>INTEGER</datatype>
-<default>NULL</default></row>
+<default>NULL</default><relation table="voters_of_america" row="SSN" />
+</row>
 <row name="candidate_id" null="1" autoincrement="0">
 <datatype>INTEGER</datatype>
 <default>NULL</default><relation table="candidates" row="id" />
@@ -121,4 +121,3 @@
 </key>
 </table>
 </sql>
-

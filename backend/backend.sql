@@ -1,4 +1,7 @@
-
+  drop database if EXISTS votingsystem ;
+  create database votingsystem;
+  use votingsystem;
+  
 
 
 
@@ -15,7 +18,7 @@
 -- ---
 
 DROP TABLE IF EXISTS `candidates`;
-		
+    
 CREATE TABLE `candidates` (
   `id` INTEGER NULL AUTO_INCREMENT DEFAULT NULL,
   `full_name` VARBINARY(100) NULL DEFAULT NULL,
@@ -29,11 +32,11 @@ CREATE TABLE `candidates` (
 -- ---
 
 DROP TABLE IF EXISTS `proposition`;
-		
+    
 CREATE TABLE `proposition` (
   `id` INTEGER NULL AUTO_INCREMENT DEFAULT NULL,
   `proposition_number` CHAR(50) NULL DEFAULT NULL,
-  `proposition_question` MEDIUMTEXT(2000) NULL DEFAULT NULL,
+  `proposition_question` MEDIUMTEXT NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) COMMENT 'proposition table holds all of the propositions for a given ';
 
@@ -43,7 +46,7 @@ CREATE TABLE `proposition` (
 -- ---
 
 DROP TABLE IF EXISTS `voters_of_america`;
-		
+    
 CREATE TABLE `voters_of_america` (
   `SSN` INTEGER NULL DEFAULT NULL,
   `full_name` VARCHAR(50) NULL DEFAULT NULL,
@@ -59,7 +62,7 @@ CREATE TABLE `voters_of_america` (
 -- ---
 
 DROP TABLE IF EXISTS `prop_votes`;
-		
+    
 CREATE TABLE `prop_votes` (
   `votes` INTEGER NULL DEFAULT NULL,
   `time` TIMESTAMP NULL DEFAULT NULL,
@@ -74,9 +77,9 @@ CREATE TABLE `prop_votes` (
 -- ---
 
 DROP TABLE IF EXISTS `candidate_votes`;
-		
+    
 CREATE TABLE `candidate_votes` (
-  `id` INTEGER NULL AUTO_INCREMENT DEFAULT NULL,
+  `id` INTEGER NULL DEFAULT NULL,
   `candidate_id` INTEGER NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 );
@@ -85,9 +88,9 @@ CREATE TABLE `candidate_votes` (
 -- Foreign Keys 
 -- ---
 
-ALTER TABLE `proposition` ADD FOREIGN KEY (id) REFERENCES `prop_votes` (`pid`);
-ALTER TABLE `voters_of_america` ADD FOREIGN KEY (SSN) REFERENCES `prop_votes` (`voa_id`);
-ALTER TABLE `voters_of_america` ADD FOREIGN KEY (SSN) REFERENCES `candidate_votes` (`id`);
+ALTER TABLE `prop_votes` ADD FOREIGN KEY (voa_id) REFERENCES `voters_of_america` (`SSN`);
+ALTER TABLE `prop_votes` ADD FOREIGN KEY (pid) REFERENCES `proposition` (`id`);
+ALTER TABLE `candidate_votes` ADD FOREIGN KEY (id) REFERENCES `voters_of_america` (`SSN`);
 ALTER TABLE `candidate_votes` ADD FOREIGN KEY (candidate_id) REFERENCES `candidates` (`id`);
 
 -- ---
@@ -114,5 +117,4 @@ ALTER TABLE `candidate_votes` ADD FOREIGN KEY (candidate_id) REFERENCES `candida
 -- ('','','','');
 -- INSERT INTO `candidate_votes` (`id`,`candidate_id`) VALUES
 -- ('','');
-
 
