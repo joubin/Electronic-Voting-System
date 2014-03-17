@@ -8,3 +8,4 @@ apt-get update
 apt-get upgrade -y
 sudo apt-get install libmysqlclient-dev python-dev -y
 sudo apt-get install python-pip -y
+sudo easy_install simplejson
