@@ -1,7 +1,9 @@
   drop database if EXISTS votingsystem ;
   create database votingsystem;
   use votingsystem;
-  
+
+
+
 
 
 
@@ -28,33 +30,32 @@ CREATE TABLE `candidates` (
 
 -- ---
 -- Table 'proposition'
--- proposition table holds all of the propositions for a given year
+-- 
 -- ---
 
 DROP TABLE IF EXISTS `proposition`;
     
 CREATE TABLE `proposition` (
   `id` INTEGER NULL AUTO_INCREMENT DEFAULT NULL,
-  `proposition_number` CHAR(50) NULL DEFAULT NULL,
+  `proposition_number` CHAR NULL DEFAULT NULL,
   `proposition_question` MEDIUMTEXT NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) COMMENT 'proposition table holds all of the propositions for a given ';
+);
 
 -- ---
 -- Table 'voters_of_america'
--- hold every voter. Every voter must register at government office
+-- 
 -- ---
 
 DROP TABLE IF EXISTS `voters_of_america`;
     
 CREATE TABLE `voters_of_america` (
-  `SSN` INTEGER NULL DEFAULT NULL,
-  `full_name` VARCHAR(50) NULL DEFAULT NULL,
-  `address` CHAR(200) NULL DEFAULT NULL,
-  `pin` INTEGER NULL DEFAULT NULL,
+  `SSN` VARCHAR(250) NULL DEFAULT NULL,
+  `full_name` VARCHAR(250) NULL DEFAULT NULL,
+  `address` MEDIUMTEXT NULL DEFAULT NULL,
   `allow_to_vote` INT NULL DEFAULT NULL,
   PRIMARY KEY (`SSN`)
-) COMMENT 'hold every voter. Every voter must register at government of';
+);
 
 -- ---
 -- Table 'prop_votes'
@@ -66,9 +67,9 @@ DROP TABLE IF EXISTS `prop_votes`;
 CREATE TABLE `prop_votes` (
   `votes` INTEGER NULL DEFAULT NULL,
   `time` TIMESTAMP NULL DEFAULT NULL,
-  `voa_id` INT NULL DEFAULT NULL,
-  `pid` INT NULL DEFAULT NULL,
-  PRIMARY KEY (`pid`, `voa_id`)
+  `SSN_voters_of_america` VARCHAR(250) NULL DEFAULT NULL,
+  `id_proposition` INTEGER NULL DEFAULT NULL,
+  PRIMARY KEY (`SSN_voters_of_america`)
 );
 
 -- ---
@@ -79,19 +80,19 @@ CREATE TABLE `prop_votes` (
 DROP TABLE IF EXISTS `candidate_votes`;
     
 CREATE TABLE `candidate_votes` (
-  `id` INTEGER NULL DEFAULT NULL,
-  `candidate_id` INTEGER NULL DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `SSN_voters_of_america` VARCHAR(250) NULL DEFAULT NULL,
+  `id_candidates` INTEGER NULL DEFAULT NULL,
+  PRIMARY KEY (`SSN_voters_of_america`)
 );
 
 -- ---
 -- Foreign Keys 
 -- ---
 
-ALTER TABLE `prop_votes` ADD FOREIGN KEY (voa_id) REFERENCES `voters_of_america` (`SSN`);
-ALTER TABLE `prop_votes` ADD FOREIGN KEY (pid) REFERENCES `proposition` (`id`);
-ALTER TABLE `candidate_votes` ADD FOREIGN KEY (id) REFERENCES `voters_of_america` (`SSN`);
-ALTER TABLE `candidate_votes` ADD FOREIGN KEY (candidate_id) REFERENCES `candidates` (`id`);
+ALTER TABLE `prop_votes` ADD FOREIGN KEY (SSN_voters_of_america) REFERENCES `voters_of_america` (`SSN`);
+ALTER TABLE `prop_votes` ADD FOREIGN KEY (id_proposition) REFERENCES `proposition` (`id`);
+ALTER TABLE `candidate_votes` ADD FOREIGN KEY (SSN_voters_of_america) REFERENCES `voters_of_america` (`SSN`);
+ALTER TABLE `candidate_votes` ADD FOREIGN KEY (id_candidates) REFERENCES `candidates` (`id`);
 
 -- ---
 -- Table Properties
@@ -111,10 +112,10 @@ ALTER TABLE `candidate_votes` ADD FOREIGN KEY (candidate_id) REFERENCES `candida
 -- ('','','');
 -- INSERT INTO `proposition` (`id`,`proposition_number`,`proposition_question`) VALUES
 -- ('','','');
--- INSERT INTO `voters_of_america` (`SSN`,`full_name`,`address`,`pin`,`allow_to_vote`) VALUES
--- ('','','','','');
--- INSERT INTO `prop_votes` (`votes`,`time`,`voa_id`,`pid`) VALUES
+-- INSERT INTO `voters_of_america` (`SSN`,`full_name`,`address`,`allow_to_vote`) VALUES
 -- ('','','','');
--- INSERT INTO `candidate_votes` (`id`,`candidate_id`) VALUES
+-- INSERT INTO `prop_votes` (`votes`,`time`,`SSN_voters_of_america`,`id_proposition`) VALUES
+-- ('','','','');
+-- INSERT INTO `candidate_votes` (`SSN_voters_of_america`,`id_candidates`) VALUES
 -- ('','');
 
