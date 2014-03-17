@@ -7,6 +7,8 @@
 
 
 
+
+
 -- ---
 -- Globals
 -- ---
@@ -37,7 +39,7 @@ DROP TABLE IF EXISTS `proposition`;
     
 CREATE TABLE `proposition` (
   `id` INTEGER NULL AUTO_INCREMENT DEFAULT NULL,
-  `proposition_number` CHAR NULL DEFAULT NULL,
+  `proposition_number` CHAR(50) NULL DEFAULT NULL,
   `proposition_question` MEDIUMTEXT NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 );
@@ -50,11 +52,12 @@ CREATE TABLE `proposition` (
 DROP TABLE IF EXISTS `voters_of_america`;
     
 CREATE TABLE `voters_of_america` (
+  `VID` VARCHAR(10) NULL DEFAULT NULL,
   `SSN` VARCHAR(250) NULL DEFAULT NULL,
   `full_name` VARCHAR(250) NULL DEFAULT NULL,
-  `address` MEDIUMTEXT NULL DEFAULT NULL,
+  `address` VARCHAR(250) NULL DEFAULT NULL,
   `allow_to_vote` INT NULL DEFAULT NULL,
-  PRIMARY KEY (`SSN`)
+  PRIMARY KEY (`VID`)
 );
 
 -- ---
@@ -65,11 +68,11 @@ CREATE TABLE `voters_of_america` (
 DROP TABLE IF EXISTS `prop_votes`;
     
 CREATE TABLE `prop_votes` (
+  `VID_voters_of_america` VARCHAR(10) NULL DEFAULT NULL,
   `votes` INTEGER NULL DEFAULT NULL,
   `time` TIMESTAMP NULL DEFAULT NULL,
-  `SSN_voters_of_america` VARCHAR(250) NULL DEFAULT NULL,
   `id_proposition` INTEGER NULL DEFAULT NULL,
-  PRIMARY KEY (`SSN_voters_of_america`)
+  PRIMARY KEY (`VID_voters_of_america`)
 );
 
 -- ---
@@ -80,18 +83,18 @@ CREATE TABLE `prop_votes` (
 DROP TABLE IF EXISTS `candidate_votes`;
     
 CREATE TABLE `candidate_votes` (
-  `SSN_voters_of_america` VARCHAR(250) NULL DEFAULT NULL,
+  `VID_voters_of_america` VARCHAR(10) NULL DEFAULT NULL,
   `id_candidates` INTEGER NULL DEFAULT NULL,
-  PRIMARY KEY (`SSN_voters_of_america`)
+  PRIMARY KEY (`VID_voters_of_america`)
 );
 
 -- ---
 -- Foreign Keys 
 -- ---
 
-ALTER TABLE `prop_votes` ADD FOREIGN KEY (SSN_voters_of_america) REFERENCES `voters_of_america` (`SSN`);
+ALTER TABLE `prop_votes` ADD FOREIGN KEY (VID_voters_of_america) REFERENCES `voters_of_america` (`VID`);
 ALTER TABLE `prop_votes` ADD FOREIGN KEY (id_proposition) REFERENCES `proposition` (`id`);
-ALTER TABLE `candidate_votes` ADD FOREIGN KEY (SSN_voters_of_america) REFERENCES `voters_of_america` (`SSN`);
+ALTER TABLE `candidate_votes` ADD FOREIGN KEY (VID_voters_of_america) REFERENCES `voters_of_america` (`VID`);
 ALTER TABLE `candidate_votes` ADD FOREIGN KEY (id_candidates) REFERENCES `candidates` (`id`);
 
 -- ---
@@ -112,10 +115,10 @@ ALTER TABLE `candidate_votes` ADD FOREIGN KEY (id_candidates) REFERENCES `candid
 -- ('','','');
 -- INSERT INTO `proposition` (`id`,`proposition_number`,`proposition_question`) VALUES
 -- ('','','');
--- INSERT INTO `voters_of_america` (`SSN`,`full_name`,`address`,`allow_to_vote`) VALUES
+-- INSERT INTO `voters_of_america` (`VID`,`SSN`,`full_name`,`address`,`allow_to_vote`) VALUES
+-- ('','','','','');
+-- INSERT INTO `prop_votes` (`VID_voters_of_america`,`votes`,`time`,`id_proposition`) VALUES
 -- ('','','','');
--- INSERT INTO `prop_votes` (`votes`,`time`,`SSN_voters_of_america`,`id_proposition`) VALUES
--- ('','','','');
--- INSERT INTO `candidate_votes` (`SSN_voters_of_america`,`id_candidates`) VALUES
+-- INSERT INTO `candidate_votes` (`VID_voters_of_america`,`id_candidates`) VALUES
 -- ('','');
 
