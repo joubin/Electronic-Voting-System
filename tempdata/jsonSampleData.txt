@@ -1,0 +1,92 @@
+# Client sends on regestraton
+## Should be encrypted using server public key
+[
+    {
+    "state":"registor",
+    "vid_hash":"somehash",
+    "sessionKey":"someKey"
+    },
+    {
+        "vid":"UserID",
+        "SSN":"123-45-6789",
+        "pin":"hello123"
+    },
+    {
+        "md5":"H(DATA[1])"
+    }
+]
+
+
+# Server sends to client
+## should be encrypted using shared key
+[
+    {
+    "state":"ballot",
+    "vid_hash":"somehash"
+    },
+    {
+
+    "presidents":{
+            "Alex R":"democrat",
+            "Mike J":"Republican",
+            "Rick S":"Independent"   
+        },
+        "props":{
+            "prop5":"move to legalaize marry  j",
+            "prop6":"move to legalaize monkey bars ",
+            "prop57":"move to legalaize michael jackson "
+    
+        }
+
+
+    },
+    {
+        "md5":"H(DATA[1])"
+    }
+]
+
+
+# Client Reponse to ballot
+## is encrypted using shared key
+
+[
+    {
+    "state":"ballot_response",
+    "vid_hash":"somehash"
+    },
+    {
+
+    "presidents":{
+            "Alex R":"yes",
+            "Mike J":"no",
+            "Rick S":"no"   
+        },
+        "props":{
+            "prop5":1,
+            "prop6":-1,
+            "prop57":0
+    
+        }
+
+    },
+    {
+        "md5":"H(DATA[1])"
+    }
+]
+
+
+# Server Response to answers
+## should be encrypted using shared key
+
+[
+    {
+    "state":"accepted",
+    "vid_hash":"somehash"
+    },
+    {
+        
+    },
+    {
+        "md5":"H(DATA[1])"
+    }
+]

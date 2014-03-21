@@ -54,8 +54,8 @@ def getballots():
             result_as_dict.append(tmp)
         myreturn["persidental_candidates"] = result_as_dict
         
-    f = open('sendToClient.txt', 'w+')
-    f.write(str(json.dumps(myreturn)))
+    return json.dumps(myreturn)
+    
 def loadballets(data):
 	for k,v in data.iteritems():
 		sql = """INSERT INTO `proposition` (`id`,`proposition_number`,`proposition_question`) VALUES (null,\"{0}\",\"{1}\" );"""
@@ -160,8 +160,13 @@ class VotingSystem(object):
         return private_key, public_key
 
     def _registerToVote(self, packet):
-        myPacket = json.loads(packet)
         user_hash = myPacket[0]["vid_hash"]
+        returnPacket = []
+        header = {}
+        header["state"] = "ballot"
+        header["vid_hash"] = user_hash
+        returnPacket.append(header)
+        myPacket = json.loads(packet)
         sql = "select vid, ssn from votingsystem.voters_of_america where `vid_hash` = \"{}\"".format(user_hash)
         result = c.execute(sql)
         if not result:
@@ -187,6 +192,7 @@ class VotingSystem(object):
                 self.connections[user_vid] = sharedKey
                 # TODO
                 # getBallot
+                returnPacket.append(getballots())
                 # encryptBallot with sharedKey
                 # sendBallot
 
@@ -231,3 +237,4 @@ if __name__ == '__main__':
     # vs = VotingSystem()
     # vs._registerToVote("data")
     print getballots()
+    pass

@@ -24,7 +24,7 @@
             sessions[vidHash.hexdigest()] = key.hexdigest()
             print sessions
             # del(key)
-            # del(vidHash)
+            # del(vid_hash, vidHash)
             # key = hashlib.sha1()
             # key.update(tmp['vid'])
             # vidHash = key.hexdigest()
