@@ -131,6 +131,7 @@ class VotingSystem:
 
         It is encrypted using the servers public key, decrypt it using the private key
         """
+        # decrypt the packet using servers public key
         sql = "select vid, ssn, full_name, address, allow_to_vote from votingsystem.voters_of_america where `vid` = \"{}\"".format(self.data[0]['vid'])
         result = c.execute(sql)
         if result:
@@ -154,7 +155,18 @@ class VotingSystem:
             # key.update(tmp['pin'])
             # print vidHash, key.hexdigest()
 
+    def caller(self):
+        # decrypt packet coming in using public key. 
 
+        """
+        verify that md5 located at DATA[2] matches Hash(DATA[1])
+        Do we need to the above statment? 
+        if state = register:
+            Call register using DATA[1]
+        if state = ballot_response:
+            call insert ballot_response
+
+        """
 
 
 
