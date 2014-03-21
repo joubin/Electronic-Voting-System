@@ -45,18 +45,26 @@ def loadCandidates(data):
 		print "done", num
 
 
-class VotingSystem:
-   
+class VotingSystem(object):
+    """docstring for VotingSystem"""
     def __init__(self, data):
+        super(VotingSystem, self).__init__()
         try:
             self.data = json.loads(data)
         except:
             print "data not loaded"
             return
-        self.connections = {}
+        options = {"register" : self._registerToVote,
+                "submit_votes" : submit_votes
+                }
+        self.rsaKey = open("key.private").read()
+        self.packet = self._decrypt_RSA(self.rsaKey, data)
+        # Do we need to check md5 or whatever?
+
+
 
     
-    def encrypt_RSA(public_key_loc, message):
+    def _encrypt_RSA(public_key_loc, message):
         '''
         param: public_key_loc Path to public key
         param: message String to be encrypted
@@ -71,7 +79,7 @@ class VotingSystem:
         return encrypted.encode('base64')
 
 
-    def decrypt_RSA(private_key_loc, package):
+    def _decrypt_RSA(private_key_loc, package):
         '''
         param: public_key_loc Path to your private key
         param: package String to be decrypted
@@ -86,7 +94,7 @@ class VotingSystem:
         decrypted = rsakey.decrypt(b64decode(package)) 
         return decrypted
 
-    def sign_data(private_key_loc, data):
+    def _sign_data(private_key_loc, data):
         '''
         param: private_key_loc Path to your private key
         param: package Data to be signed
@@ -123,50 +131,25 @@ class VotingSystem:
         f.close() # you can omit in most cases as the destructor will call if
         return private_key, public_key
 
-    def registerToVote(self):
-        """
-        Data should look like
-        -----------------------
-        data = '[{"vid":"000lNinon", "pin":"1234", "ssn":"654-46-3894"}]'
+    def _registerToVote(self, packet):
+        # search the db for what is in packet[0]["vid_hash"]
+        # if not found
+            # return error and quit
+        # if found
+            # use pin to decrypt each item from the select
+            # compare each item from the select to each item supplied in packet[1]
+            # if the items match
+                # add an entry to connections[vid_hash] = Hash_sha1()
+            #if the items dont match
 
-        It is encrypted using the servers public key, decrypt it using the private key
-        """
-        # decrypt the packet using servers public key
-        sql = "select vid, ssn, full_name, address, allow_to_vote from votingsystem.voters_of_america where `vid` = \"{}\"".format(self.data[0]['vid'])
-        result = c.execute(sql)
-        if result:
-            result = c.fetchone()
-        tmp = self.data[0]
-        if (result[0] == tmp['vid'] and result[1] == tmp['ssn']):
-            key = hashlib.sha1()
-            key.update(tmp['vid'])
-            key.update(tmp['ssn'])
-            key.update(tmp['pin'])
-            vidHash = hashlib.sha1()
-            vidHash.update('vid')
-            sessions[vidHash.hexdigest()] = key.hexdigest()
-            print sessions
-            # del(key)
-            # del(vidHash)
-            # key = hashlib.sha1()
-            # key.update(tmp['vid'])
-            # vidHash = key.hexdigest()
-            # key.update(tmp['ssn'])
-            # key.update(tmp['pin'])
-            # print vidHash, key.hexdigest()
+    def _get_ballots(self, packet):
+        pass
 
-    def caller(self):
-        # decrypt packet coming in using public key. 
 
-        """
-        verify that md5 located at DATA[2] matches Hash(DATA[1])
-        Do we need to the above statment? 
-        if state = register:
-            Call register using DATA[1]
-        if state = ballot_response:
-            call insert ballot_response
+    def caller(self, packet):
+        packet = self._decrypt_RSA(self.rsaKey, data)
+        options[str(packet[0]["state"])](packet[1:2])
 
-        """
 
 
 
