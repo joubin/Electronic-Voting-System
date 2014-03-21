@@ -12,3 +12,8 @@ sudo apt-get install libmysqlclient-dev python-dev -y
 sudo apt-get install python-pip -y
 sudo easy_install simplejson -y
 sudo apt-get install python-mysqldb -y
+sudo apt-get install python-dev -y 
+sudo apt-get install python-setuptools -y
+sudo ARCHFLAGS='-arch i386 -arch x86_64' easy_install pycrypto
+
+

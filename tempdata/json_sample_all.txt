@@ -3,7 +3,8 @@
 [
     {
     "state":"registor",
-    "vid_hash":"somehash"
+    "vid_hash":"somehash",
+    "sessionKey":"someKey"
     },
     {
         "vid":"UserID",

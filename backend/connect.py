@@ -1,20 +1,21 @@
 # #!/usr/bin/python
 # # -*- coding: utf-8 -*-
 
-import MySQLdb
 import sys
 import ast
 import json
 import hashlib
+from Crypto.Hash import SHA256
+import sampleAESEncDec 
 
-
+xx = sampleAESEncDec.RunAES()
+#setup DB
+import MySQLdb
 
 db=MySQLdb.connect(user="root",passwd="joubin03",db="votingsystem")
 c = db.cursor()
 sessions = {}
-# sql = "SELECT * from voters_of_america"
-# c.execute(sql)
-# result = c.fetchall()
+
 
 # for i in result:
 # 	print i
@@ -25,7 +26,21 @@ with open("sample.json") as json_file:
 
 # print len(jd)
 
-
+def getballots():
+    sql = "select * from proposition;"
+    result = c.execute(sql)
+    if result:
+        result = c.fetchall()
+    result_as_dict = []
+    for r in result:
+        tmp = {
+            'id' : r[0],
+            'proposition_number' : r[1],
+            'question' : r[2]}
+        result_as_dict.append(tmp)
+    print json.dumps(result_as_dict)
+    f = open('propjsonDump.txt', 'w+')
+    f.write(str(result_as_dict))
 def loadballets(data):
 	for k,v in data.iteritems():
 		sql = """INSERT INTO `proposition` (`id`,`proposition_number`,`proposition_question`) VALUES (null,\"{0}\",\"{1}\" );"""
@@ -47,24 +62,22 @@ def loadCandidates(data):
 
 class VotingSystem(object):
     """docstring for VotingSystem"""
-    def __init__(self, data):
+    def __init__(self):
         super(VotingSystem, self).__init__()
-        try:
-            self.data = json.loads(data)
-        except:
-            print "data not loaded"
-            return
-        options = {"register" : self._registerToVote,
-                "submit_votes" : submit_votes
+        global RunAES
+        self.options = {"register" : self._registerToVote,
+                "submit_votes" : self._submit_votes
                 }
         self.rsaKey = open("key.private").read()
-        self.packet = self._decrypt_RSA(self.rsaKey, data)
+        self.aes = xx
+
+
         # Do we need to check md5 or whatever?
 
 
 
     
-    def _encrypt_RSA(public_key_loc, message):
+    def _encrypt_RSA(self, public_key_loc, message):
         '''
         param: public_key_loc Path to public key
         param: message String to be encrypted
@@ -79,7 +92,7 @@ class VotingSystem(object):
         return encrypted.encode('base64')
 
 
-    def _decrypt_RSA(private_key_loc, package):
+    def _decrypt_RSA(self, private_key_loc, package):
         '''
         param: public_key_loc Path to your private key
         param: package String to be decrypted
@@ -94,7 +107,7 @@ class VotingSystem(object):
         decrypted = rsakey.decrypt(b64decode(package)) 
         return decrypted
 
-    def _sign_data(private_key_loc, data):
+    def _sign_data(self, private_key_loc, data):
         '''
         param: private_key_loc Path to your private key
         param: package Data to be signed
@@ -132,34 +145,74 @@ class VotingSystem(object):
         return private_key, public_key
 
     def _registerToVote(self, packet):
+        myPacket = json.loads(packet)
+        user_hash = myPacket[0]["vid_hash"]
+        sql = "select vid, ssn from votingsystem.voters_of_america where `vid_hash` = \"{}\"".format(user_hash)
+        result = c.execute(sql)
+        if not result:
+            #send error code that the user was not found and they need to go to a goverment office to register.
+            print "wrong user"
+            pass
+        else: 
+            result = c.fetchone()
+            # may have to do 
+            #result = result[0]
+            user_pin = packet[1]["pin"]
+            user_vid = packet[1]["vid"]
+            user_ssn = packet[1]["ssn"]
+            vid_matches = user_vid == self.aes.decrypt(user_pin, result[0])
+            ssn_matches = user_ssn == self.aes.decrypt(user_pin, result[1])
+            vid_hash_matches = user_hash == self.aes.sha255Item(user_vid)
+            if vid_matches and ssn_matches and vid_hash_matches:
+                myHash = SHA256.new()
+                myHash.update(user_vid)
+                myHash.update(user_ssn)
+                myHash.update(user_pin)
+                sharedKey = myHash.digest()
+                self.connections[user_vid] = sharedKey
+                # TODO
+                # getBallot
+                # encryptBallot with sharedKey
+                # sendBallot
+
+                # remove Test code
+                print "Good"
+            else:
+                # error that the pin, social or the user was incorrect
+                print "Wrong information"
+                return 
+
+
+
+
+
+
+            return
+
         # search the db for what is in packet[0]["vid_hash"]
         # if not found
-            # return error and quit
+            # return wrong user id
         # if found
             # use pin to decrypt each item from the select
             # compare each item from the select to each item supplied in packet[1]
             # if the items match
-                # add an entry to connections[vid_hash] = Hash_sha1()
+                # add an entry to connections[vid_hash] = Hash_sha1(vid+ssn+pin)
+                # send the ballot template encrypted using Hash_sha1(vid+ssn+pin)
             #if the items dont match
+                # return some of the items provided didnt match
 
-    def _get_ballots(self, packet):
+    def _submit_votes(self, packet):
         pass
 
 
     def caller(self, packet):
         packet = self._decrypt_RSA(self.rsaKey, data)
-        options[str(packet[0]["state"])](packet[1:2])
+        self.options[str(packet[0]["state"])](packet)
 
 
 
 
-data = '[{"vid":"000lNinon", "pin":"1234", "ssn":"654-46-3894"}]'
-
-# data = ast.literal_eval(data)
-
-x = VotingSystem(data)
-
-x.registerToVote()
-x._generate_RSA()
-
-#END
+if __name__ == '__main__':
+    # vs = VotingSystem()
+    # vs._registerToVote("data")
+    print getballots()
