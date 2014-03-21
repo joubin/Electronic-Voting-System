@@ -20,60 +20,93 @@
 # Server sends to client
 ## should be encrypted using shared key
 [
-    {
-    "state":"ballot",
-    "vid_hash":"somehash"
-    },
-    {
-
-    "presidents":{
-            "Alex R":"democrat",
-            "Mike J":"Republican",
-            "Rick S":"Independent"   
-        },
-        "props":{
-            "prop5":"move to legalaize marry  j",
-            "prop6":"move to legalaize monkey bars ",
-            "prop57":"move to legalaize michael jackson "
-    
-        }
-
-
-    },
-    {
-        "md5":"H(DATA[1])"
-    }
+  {
+    "state": "ballot",
+    "vid_hash": "somehash"
+  },
+  {
+    "proposition": [
+      {
+        "proposition_number": "prop5",
+        "question": "move to legalaize marry  j",
+        "id": 51
+      },
+      {
+        "proposition_number": "prop6",
+        "question": "move to legalaize monkey bars ",
+        "id": 52
+      },
+      {
+        "proposition_number": "prop57",
+        "question": "move to legalaize michael jackson ",
+        "id": 53
+      }
+    ],
+    "persidental_candidates": [
+      {
+        "party_affiliation": "Independent",
+        "id": 1,
+        "full_name": "Rick S"
+      },
+      {
+        "party_affiliation": "Republican",
+        "id": 2,
+        "full_name": "Mike J"
+      },
+      {
+        "party_affiliation": "democrat",
+        "id": 3,
+        "full_name": "Alex R"
+      }
+    ]
+  }
 ]
-
 
 # Client Reponse to ballot
 ## is encrypted using shared key
 
 [
-    {
-    "state":"ballot_response",
-    "vid_hash":"somehash"
-    },
-    {
-
-    "presidents":{
-            "Alex R":"yes",
-            "Mike J":"no",
-            "Rick S":"no"   
-        },
-        "props":{
-            "prop5":1,
-            "prop6":-1,
-            "prop57":0
-    
-        }
-
-    },
-    {
-        "md5":"H(DATA[1])"
-    }
+  {
+    "state": "ballot_response",
+    "vid_hash": "somehash"
+  },
+  {
+    "proposition": [
+      {
+        "proposition_number": "prop5",
+        "answer": "move to legalaize marry  j",
+        "id": 51
+      },
+      {
+        "proposition_number": "prop6",
+        "answer": "move to legalaize monkey bars ",
+        "id": 52
+      },
+      {
+        "proposition_number": "prop57",
+        "answer": "move to legalaize michael jackson ",
+        "id": 53
+      }
+    ],
+    "persidental_candidates": [
+      {
+        "party_affiliation": "Independent",
+        "id": 1,
+        "full_name": "Rick S"
+      },
+      {
+        "party_affiliation": "Republican",
+        "id": 2,
+        "full_name": "Mike J"
+      },
+      {
+        "party_affiliation": "democrat",
+        "id": 3,
+        "full_name": "Alex R"
+      }
+    ]
+  }
 ]
-
 
 # Server Response to answers
 ## should be encrypted using shared key

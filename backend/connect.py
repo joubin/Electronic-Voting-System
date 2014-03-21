@@ -27,20 +27,35 @@ with open("sample.json") as json_file:
 # print len(jd)
 
 def getballots():
+    myreturn = {}
     sql = "select * from proposition;"
     result = c.execute(sql)
     if result:
         result = c.fetchall()
-    result_as_dict = []
-    for r in result:
-        tmp = {
-            'id' : r[0],
-            'proposition_number' : r[1],
-            'question' : r[2]}
-        result_as_dict.append(tmp)
-    print json.dumps(result_as_dict)
-    f = open('propjsonDump.txt', 'w+')
-    f.write(str(result_as_dict))
+        result_as_dict = []
+        for r in result:
+            tmp = {
+                "id" : r[0],
+                "proposition_number" : r[1],
+                "question" : r[2]}
+            result_as_dict.append(tmp)
+        
+        myreturn["proposition"] = result_as_dict
+    sql = "select * from candidates;"
+    result = c.execute(sql)
+    if result:
+        result = c.fetchall()
+        result_as_dict = []
+        for r in result:
+            tmp = {
+                "id" : r[0],
+                "full_name" : r[1],
+                "party_affiliation" : r[2]}
+            result_as_dict.append(tmp)
+        myreturn["persidental_candidates"] = result_as_dict
+        
+    f = open('sendToClient.txt', 'w+')
+    f.write(str(json.dumps(myreturn)))
 def loadballets(data):
 	for k,v in data.iteritems():
 		sql = """INSERT INTO `proposition` (`id`,`proposition_number`,`proposition_question`) VALUES (null,\"{0}\",\"{1}\" );"""
