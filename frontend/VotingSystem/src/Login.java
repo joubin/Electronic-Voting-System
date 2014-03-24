@@ -34,7 +34,8 @@ public class Login extends JFrame {
 		getContentPane().add(label);
 		
 		JLabel lblUsername = new JLabel("Username");
-		lblUsername.setBounds(117, 76, 48, 14);
+		lblUsername.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblUsername.setBounds(98, 76, 67, 14);
 		getContentPane().add(lblUsername);
 		
 		JLabel lblSsn = new JLabel("SSN");
@@ -117,6 +118,7 @@ public class Login extends JFrame {
 		SizeDocumentFilter sf2 = new SizeDocumentFilter(2);
 		sf2.installFilter(ssn2);
 		SizeDocumentFilter sf3 = new SizeDocumentFilter(4);
+		sf3.setAutoTab(false);
 		sf3.installFilter(ssn3);
 		
 		label_1 = new JLabel("-");
