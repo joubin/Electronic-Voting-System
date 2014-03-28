@@ -21,7 +21,6 @@ public class Login extends JFrame {
 	private JPasswordField passwordField_3;
 	private JPasswordField ssn2;
 	private JPasswordField ssn3;
-	private JLabel label;
 	private JLabel label_1;
 	public Login() {
 		setTitle("Voting System");
@@ -29,38 +28,23 @@ public class Login extends JFrame {
 		getContentPane().setBackground(Color.WHITE);
 		getContentPane().setLayout(null);
 		
-		label = new JLabel("-");
-		label.setBounds(210, 98, 4, 14);
-		getContentPane().add(label);
-		
 		JLabel lblUsername = new JLabel("Username");
 		lblUsername.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblUsername.setBounds(98, 76, 67, 14);
+		lblUsername.setBounds(81, 76, 67, 14);
 		getContentPane().add(lblUsername);
 		
 		JLabel lblSsn = new JLabel("SSN");
 		lblSsn.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblSsn.setBounds(119, 101, 46, 14);
+		lblSsn.setBounds(102, 101, 46, 14);
 		getContentPane().add(lblSsn);
 		
 		lblPin = new JLabel("Pin");
 		lblPin.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblPin.setBounds(119, 126, 46, 14);
+		lblPin.setBounds(102, 126, 46, 14);
 		getContentPane().add(lblPin);
 		
-		JPanel panel = new JPanel();
-		panel.setBackground(SystemColor.inactiveCaptionBorder);
-		panel.setBounds(0, 238, 434, 23);
-		getContentPane().add(panel);
-		panel.setLayout(null);
-		
-		lblCscVotingSystem = new JLabel("CSC250 Voting System\u00A9\u00AE\u2122");
-		lblCscVotingSystem.setBounds(163, 0, 145, 25);
-		panel.add(lblCscVotingSystem);
-		lblCscVotingSystem.setHorizontalAlignment(SwingConstants.CENTER);
-		
 		JButton btnLogin = new JButton("Login");
-		btnLogin.setBounds(175, 155, 118, 23);
+		btnLogin.setBounds(158, 155, 118, 23);
 		getContentPane().add(btnLogin);
 		
 		JPanel panel_1 = new JPanel();
@@ -70,7 +54,7 @@ public class Login extends JFrame {
 		panel_1.setLayout(null);
 		
 		lblPleaseLoginTo = new JLabel("2016 Election");
-		lblPleaseLoginTo.setBounds(174, 11, 107, 22);
+		lblPleaseLoginTo.setBounds(163, 11, 107, 22);
 		panel_1.add(lblPleaseLoginTo);
 		lblPleaseLoginTo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblPleaseLoginTo.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -78,7 +62,7 @@ public class Login extends JFrame {
 		panel_2 = new JPanel();
 		panel_2.setBorder(null);
 		panel_2.setBackground(Color.WHITE);
-		panel_2.setBounds(175, 72, 118, 71);
+		panel_2.setBounds(158, 72, 118, 71);
 		getContentPane().add(panel_2);
 		panel_2.setLayout(null);
 		
@@ -122,8 +106,23 @@ public class Login extends JFrame {
 		sf3.installFilter(ssn3);
 		
 		label_1 = new JLabel("-");
-		label_1.setBounds(70, 26, 4, 14);
+		label_1.setBounds(71, 28, 4, 14);
 		panel_2.add(label_1);
+		
+		JLabel label = new JLabel("-");
+		label.setBounds(35, 28, 4, 14);
+		panel_2.add(label);
+		
+		lblCscVotingSystem = new JLabel("CSC250 Voting System\u00A9\u00AE\u2122");
+		lblCscVotingSystem.setBounds(134, 238, 165, 25);
+		getContentPane().add(lblCscVotingSystem);
+		lblCscVotingSystem.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		JPanel panel = new JPanel();
+		panel.setBackground(SystemColor.inactiveCaptionBorder);
+		panel.setBounds(0, 238, 434, 23);
+		getContentPane().add(panel);
+		panel.setLayout(null);
 		setVisible(true);
 	}
 }
