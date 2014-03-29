@@ -1,42 +1,40 @@
-[
-  {
-    "state": "ballot",
-    "vid_hash": "somehash"
-  },
-  {
-    "proposition": [
-      {
-        "proposition_number": "prop5",
-        "question": "move to legalaize marry  j",
-        "id": 51
-      },
-      {
-        "proposition_number": "prop6",
-        "question": "move to legalaize monkey bars ",
-        "id": 52
-      },
-      {
-        "proposition_number": "prop57",
-        "question": "move to legalaize michael jackson ",
-        "id": 53
-      }
-    ],
-    "persidental_candidates": [
-      {
-        "party_affiliation": "Independent",
-        "id": 1,
-        "full_name": "Rick S"
-      },
-      {
-        "party_affiliation": "Republican",
-        "id": 2,
-        "full_name": "Mike J"
-      },
-      {
-        "party_affiliation": "democrat",
-        "id": 3,
-        "full_name": "Alex R"
-      }
-    ]
-  }
-]
+{
+  "state": "ballot",
+  "vid_hash": "somehash"
+},
+{
+  "proposition": [
+    {
+      "proposition_number": "prop5",
+      "question": "move to legalaize marry  j",
+      "id": 51
+    },
+    {
+      "proposition_number": "prop6",
+      "question": "move to legalaize monkey bars ",
+      "id": 52
+    },
+    {
+      "proposition_number": "prop57",
+      "question": "move to legalaize michael jackson ",
+      "id": 53
+    }
+  ],
+  "presidental_candidates": [
+    {
+      "party_affiliation": "Independent",
+      "id": 1,
+      "full_name": "Rick S"
+    },
+    {
+      "party_affiliation": "Republican",
+      "id": 2,
+      "full_name": "Mike J"
+    },
+    {
+      "party_affiliation": "democrat",
+      "id": 3,
+      "full_name": "Alex R"
+    }
+  ]
+}
