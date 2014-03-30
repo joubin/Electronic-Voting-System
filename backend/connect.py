@@ -161,12 +161,19 @@ class VotingSystem(object):
 
     def _registerToVote(self, packet):
         user_hash = myPacket["vid_hash"]
-        returnPacket = []
-        header = {}
-        header["state"] = "ballot"
-        header["vid_hash"] = user_hash
-        returnPacket.append(header)
+        returnPacket = {}
+        returnPacket["state"] = "ballot"
+        returnPacket["vid_hash"] = user_hash
         myPacket = json.loads(packet)
+        user_pin = packet["userInfo"]["pin"]
+        user_vid = packet["userInfo"]["vid"]
+        user_ssn = packet["userInfo"]["ssn"]
+        myHash = SHA256.new()
+        myHash.update(user_vid)
+        myHash.update(user_ssn)
+        myHash.update(user_pin)
+        sharedKey = myHash.digest()
+        self.connections[user_vid] = sharedKey
         sql = "select vid, ssn from votingsystem.voters_of_america where `vid_hash` = \"{}\"".format(user_hash)
         result = c.execute(sql)
         if not result:
@@ -177,39 +184,17 @@ class VotingSystem(object):
             result = c.fetchone()
             # may have to do 
             #result = result[0]
-            user_pin = packet[1]["pin"]
-            user_vid = packet[1]["vid"]
-            user_ssn = packet[1]["ssn"]
             vid_matches = user_vid == self.aes.decrypt(user_pin, result[0])
             ssn_matches = user_ssn == self.aes.decrypt(user_pin, result[1])
             vid_hash_matches = user_hash == self.aes.sha255Item(user_vid)
             if vid_matches and ssn_matches and vid_hash_matches:
-                myHash = SHA256.new()
-                myHash.update(user_vid)
-                myHash.update(user_ssn)
-                myHash.update(user_pin)
-                sharedKey = myHash.digest()
-                self.connections[user_vid] = sharedKey
-                # TODO
                 # getBallot
-                returnPacket.append(getballots())
-                # encryptBallot with sharedKey
-                # sendBallot
-
-                # remove Test code
-                print "Good"
+                localBallot = getballots()
+                for k,v in localBallot.iteritems():
+                    returnPacket[k] = v
+                returnPacket["state"] = "ballot"
             else:
-                # error that the pin, social or the user was incorrect
-                print "Wrong information"
-                return 
-
-
-
-
-
-
-            return
-
+                returnPacket["state"] = "wrong info"
         # search the db for what is in packet[0]["vid_hash"]
         # if not found
             # return wrong user id
