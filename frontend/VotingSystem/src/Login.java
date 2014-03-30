@@ -1,14 +1,23 @@
 import javax.swing.JFrame;
+
 import java.awt.Color;
+
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import javax.swing.JPanel;
 import javax.swing.JFormattedTextField;
+
 import java.awt.Font;
+
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
+
 import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Arrays;
 
 
 public class Login extends JFrame {
@@ -18,10 +27,12 @@ public class Login extends JFrame {
 	private JPanel panel_2;
 	private JTextField username;
 	private JPasswordField ssn1;
-	private JPasswordField passwordField_3;
+	private JPasswordField ppin;
 	private JPasswordField ssn2;
 	private JPasswordField ssn3;
 	private JLabel label_1;
+	private JButton btnLogin;
+	
 	public Login() {
 		setTitle("Voting System");
 		setSize(450,300);
@@ -43,18 +54,18 @@ public class Login extends JFrame {
 		lblPin.setBounds(102, 126, 46, 14);
 		getContentPane().add(lblPin);
 		
-		JButton btnLogin = new JButton("Login");
-		btnLogin.setBounds(158, 155, 118, 23);
+		btnLogin = new JButton("Login");
+		btnLogin.setBounds(163, 155, 118, 23);
 		getContentPane().add(btnLogin);
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(SystemColor.inactiveCaption);
-		panel_1.setBounds(0, 0, 434, 39);
+		panel_1.setBounds(0, 0, 444, 39);
 		getContentPane().add(panel_1);
 		panel_1.setLayout(null);
 		
 		lblPleaseLoginTo = new JLabel("2016 Election");
-		lblPleaseLoginTo.setBounds(163, 11, 107, 22);
+		lblPleaseLoginTo.setBounds(168, 8, 107, 22);
 		panel_1.add(lblPleaseLoginTo);
 		lblPleaseLoginTo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblPleaseLoginTo.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -62,7 +73,7 @@ public class Login extends JFrame {
 		panel_2 = new JPanel();
 		panel_2.setBorder(null);
 		panel_2.setBackground(Color.WHITE);
-		panel_2.setBounds(158, 72, 118, 71);
+		panel_2.setBounds(163, 72, 118, 71);
 		getContentPane().add(panel_2);
 		panel_2.setLayout(null);
 		
@@ -80,10 +91,10 @@ public class Login extends JFrame {
 		panel_2.add(ssn1);
 		ssn1.setDocument(new JTextFieldLimit(3));
 		
-		passwordField_3 = new JPasswordField();
-		passwordField_3.setToolTipText("Please enter your issued pin number.");
-		passwordField_3.setBounds(0, 50, 118, 20);
-		panel_2.add(passwordField_3);
+		ppin = new JPasswordField();
+		ppin.setToolTipText("Please enter your issued pin number.");
+		ppin.setBounds(0, 50, 118, 20);
+		panel_2.add(ppin);
 		
 		ssn2 = new JPasswordField();
 		ssn2.setHorizontalAlignment(SwingConstants.CENTER);
@@ -113,16 +124,43 @@ public class Login extends JFrame {
 		label.setBounds(35, 28, 4, 14);
 		panel_2.add(label);
 		
-		lblCscVotingSystem = new JLabel("CSC250 Voting System\u00A9\u00AE\u2122");
-		lblCscVotingSystem.setBounds(134, 238, 165, 25);
-		getContentPane().add(lblCscVotingSystem);
-		lblCscVotingSystem.setHorizontalAlignment(SwingConstants.CENTER);
-		
 		JPanel panel = new JPanel();
 		panel.setBackground(SystemColor.inactiveCaptionBorder);
-		panel.setBounds(0, 238, 434, 23);
+		panel.setBounds(0, 248, 444, 23);
 		getContentPane().add(panel);
 		panel.setLayout(null);
+		
+		lblCscVotingSystem = new JLabel("CSC250 Voting System\u00A9\u00AE\u2122");
+		lblCscVotingSystem.setBounds(139, -1, 165, 25);
+		panel.add(lblCscVotingSystem);
+		lblCscVotingSystem.setHorizontalAlignment(SwingConstants.CENTER);
+		this.setResizable(false);
+		this.setLocationRelativeTo(null);
 		setVisible(true);
+		
+		actionLogin();
+	}
+	
+	public void actionLogin(){
+		btnLogin.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				char[] pssn1 = new char[] { '1', '2', '3' };
+				char[] pssn2 = new char[] {'4', '5' };
+				char[] pssn3 = new char[] {'6', '7', '8', '9' };
+				char[] tpin = new char[] { '1', '2', '3', '4' };
+				if(username.getText().equals("god") && Arrays.equals(pssn1, ssn1.getPassword()) 
+						&& Arrays.equals(pssn2, ssn2.getPassword()) && Arrays.equals(pssn3, ssn3.getPassword()) 
+						&& Arrays.equals(tpin, ppin.getPassword())) {
+					VotingBallot vb =new VotingBallot();
+					dispose();
+				} else {
+					JOptionPane.showMessageDialog(null,"Wrong Password / Username / Pin");
+					username.setText("");
+					ssn1.setText(""); ssn2.setText(""); ssn3.setText("");
+					ppin.setText("");
+					username.requestFocus();
+				}
+			}
+		});
 	}
 }

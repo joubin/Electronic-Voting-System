@@ -1,10 +1,12 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JParser {
+	private Ballot ballot;
 	
     public JParser() {
         //JParser read = new JParser();
@@ -14,14 +16,14 @@ public class JParser {
     		BufferedReader fileReader = new BufferedReader(new FileReader("./sample.json"));
     		ObjectMapper mapper = new ObjectMapper();
     		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    		Ballot ballot = mapper.readValue(fileReader, Ballot.class);
+    		ballot = mapper.readValue(fileReader, Ballot.class);
     		System.out.println(ballot.getState());
     		System.out.println(ballot.getVidHash());
     		for (Proposition prop : ballot.getProposition()) {
-    		  System.out.println(prop.getPropositionNumber());
+    		  System.out.printf("%s\t%s\t%d\n", prop.getPropositionNumber(), prop.getQuestion(), prop.getID());
     		}
     		for (PresidentialCandidates pres : ballot.getPresidentialCandidates()) {
-      		  System.out.println(pres.getFullName());
+      		  System.out.printf("%s\t%s\t%d\n", pres.getPartyAffiliation(), pres.getFullName(), pres.getID());
       		}
 			
     		
@@ -46,4 +48,15 @@ public class JParser {
     	
     }
     
+    public String getState(){
+    	return ballot.getState();
+    }
+    
+    public List<Proposition> getProposition(){
+		return ballot.getProposition();
+	}
+    
+    public List<PresidentialCandidates> getPresidentialCandidates(){
+		return ballot.getPresidentialCandidates();
+	}
 }
