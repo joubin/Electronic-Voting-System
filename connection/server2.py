@@ -1,10 +1,16 @@
 port = 9999
 
 # import socket library
+import signal	# to handle Ctrl - C
+# import zmq		# to handle Ctrl - C
 import socket
 import os
 import threading
 import sys,time
+
+def signal_handler(sig, stack):
+	print("Interrupt Handler Called.")
+	raise SystemExit('Exit')
 
 class serverThread (threading.Thread):
 	
@@ -32,7 +38,6 @@ class serverThread (threading.Thread):
 
 			print "thread", self.name, " is going to die"
 			self.sock.close()
-			
 ###################################
 # main server thread starts here
 ###################################
@@ -50,10 +55,13 @@ print "listening on all interfaces..."
 
 # accept loop
 while True:
-	(c, addr) = s.accept()
-
-	# create a new thread and start it
-	# passes the socket to the thread as an 
-	worker = serverThread(c, addr)
-	worker.start()
-
+	try:
+		(c, addr) = s.accept()
+		# create a new thread and start it
+		# passes the socket to the thread as an 
+		worker = serverThread(c, addr)
+		worker.start()
+	except KeyboardInterrupt:
+		print("\ninterrupt received, proceeding ...")
+		sys.exit(0)
+		s.close()
