@@ -7,6 +7,9 @@ import socket
 import os
 import threading
 import sys,time
+import connect
+
+PACKETSIZE = 4096
 
 def signal_handler(sig, stack):
 	print("Interrupt Handler Called.")
@@ -15,20 +18,22 @@ def signal_handler(sig, stack):
 class serverThread (threading.Thread):
 	
 	# constructor
-	def __init__(self, c, a):
+	def __init__(self, c, a, votingSystem):
 		threading.Thread.__init__(self)
 		self.sock = c # client socket 
 		self.addr = a # ip address information
-		
+		self.votingSystem = votingSystem
+
 	# the entry point into the thread
 	def run(self):
 		
 		# todo -- really need a way to synchronize the log messages
 		print self.addr, " connected. Starting worker thread ", self.name,
 		try:
-			msg = self.sock.recv(4096)
-			self.sock.send(msg.upper())
-			x = self.sock.recv(4096)
+			msg = self.sock.recv(PACKETSIZE)
+			result = self.votingSystem.caller(msg)
+			self.sock.send(result)
+			x = self.sock.recv(PACKETSIZE)
 			print x
 		finally:
 			# close socket
@@ -54,12 +59,14 @@ s.listen(50)
 print "listening on all interfaces..."
 
 # accept loop
+votingSystem = connect.VotingSystem()
+
 while True:
 	try:
 		(c, addr) = s.accept()
 		# create a new thread and start it
 		# passes the socket to the thread as an 
-		worker = serverThread(c, addr)
+		worker = serverThread(c, addr, votingSystem)
 		worker.start()
 	except KeyboardInterrupt:
 		print("\ninterrupt received, proceeding ...")
