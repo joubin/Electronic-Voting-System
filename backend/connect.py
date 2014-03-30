@@ -85,6 +85,7 @@ class VotingSystem(object):
                 }
         self.rsaKey = open("key.private").read()
         self.aes = xx
+        self.connections = {}
 
 
         # Do we need to check md5 or whatever?
@@ -94,13 +95,13 @@ class VotingSystem(object):
     
     def _encrypt_RSA(self, public_key_loc, message):
         '''
-        param: public_key_loc Path to public key
+        param: '`key.pub' Path to public key
         param: message String to be encrypted
         return base64 encoded encrypted string
         '''
         from Crypto.PublicKey import RSA
         from Crypto.Cipher import PKCS1_OAEP
-        key = open(public_key_loc, "r").read()
+        key = open('key.public', "r").read()
         rsakey = RSA.importKey(key)
         rsakey = PKCS1_OAEP.new(rsakey)
         encrypted = rsakey.encrypt(message)
@@ -116,7 +117,7 @@ class VotingSystem(object):
         from Crypto.PublicKey import RSA 
         from Crypto.Cipher import PKCS1_OAEP 
         from base64 import b64decode 
-        key = open(private_key_loc, "r").read() 
+        key = open('key.private', "r").read() 
         rsakey = RSA.importKey(key) 
         rsakey = PKCS1_OAEP.new(rsakey) 
         decrypted = rsakey.decrypt(b64decode(package)) 
@@ -160,14 +161,36 @@ class VotingSystem(object):
         return private_key, public_key
 
     def _registerToVote(self, packet):
+        print """
+        _registerToVote got called
+
+        woop
+        woop
+        woop
+
+        """
+        myPacket = str(packet).encode('utf-8')
+        print myPacket,
+        myPacket = myPacket.replace("\'","\"")
+        myPacket = myPacket.replace("u\"","\"")
+        print myPacket,
+        print "asd"
+        myPacket = json.loads(str(myPacket))
+        print "packet", packet
+
+        print """
+        """
+        print "myPacket", myPacket
+
         user_hash = myPacket["vid_hash"]
+        print user_hash
         returnPacket = {}
         returnPacket["state"] = "ballot"
         returnPacket["vid_hash"] = user_hash
-        myPacket = json.loads(packet)
-        user_pin = packet["userInfo"]["pin"]
-        user_vid = packet["userInfo"]["vid"]
-        user_ssn = packet["userInfo"]["ssn"]
+        # myPacket = json.loads(packet)
+        user_pin = myPacket["userInfo"]["pin"]
+        user_vid = myPacket["userInfo"]["vid"]
+        user_ssn = myPacket["userInfo"]["ssn"]
         myHash = SHA256.new()
         myHash.update(user_vid)
         myHash.update(user_ssn)
@@ -178,9 +201,10 @@ class VotingSystem(object):
         result = c.execute(sql)
         if not result:
             #send error code that the user was not found and they need to go to a goverment office to register.
-            print "wrong user"
+            print "could not get the rwo from the db"
             pass
         else: 
+            print "I was able to get the row from the db"
             result = c.fetchone()
             # may have to do 
             #result = result[0]
@@ -194,6 +218,7 @@ class VotingSystem(object):
                     returnPacket[k] = v
                 returnPacket["state"] = "ballot"
             else:
+                print "some shit got fucked"
                 returnPacket["state"] = "wrong info"
         # search the db for what is in packet[0]["vid_hash"]
         # if not found
@@ -207,19 +232,33 @@ class VotingSystem(object):
             #if the items dont match
                 # return some of the items provided didnt match
 
+        return returnPacket
     def _submit_votes(self, packet):
         pass
 
 
     def caller(self, packet):
-        packet = self._decrypt_RSA(self.rsaKey, data)
-        self.options[str(packet["state"])](packet)
+        print "got a packet, running caller"
+        decrypted_packet = self._decrypt_RSA(self.rsaKey, packet)
+        decrypted_packet = decrypted_packet.replace("\'","\"")
+
+        jd = json.loads(str(decrypted_packet))
+        decrypted_packet = jd
+
+        state = decrypted_packet["state"]
+        if state == "register":
+            return self._registerToVote(str(jd))
+        else:
+            print "go fuck off"
+        # self.options[str(decrypted_packet["state"])](decrypted_packet)
 
 
 
 
-if __name__ == '__main__':
-    # vs = VotingSystem()
-    # vs._registerToVote("data")
-    print getballots()
-    pass
+
+
+# if __name__ == '__main__':
+#     # vs = VotingSystem()
+#     # vs._registerToVote("data")
+#     print getballots()
+#     pass

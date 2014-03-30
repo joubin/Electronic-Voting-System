@@ -2,11 +2,11 @@
 ## Should be encrypted using server public key
 
 {
-  "state": "registor",
+  "state": "register",
   "vid_hash": "somehash",
   "userInfo": {
     "vid": "UserID",
-    "SSN": "123-45-6789",
+    "ssn": "123-45-6789",
     "pin": "hello123"
   }
 }
