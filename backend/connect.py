@@ -7,6 +7,8 @@ import json
 import hashlib
 from Crypto.Hash import SHA256
 import sampleAESEncDec 
+from sampleAESEncDec import RunAES
+
 
 xx = sampleAESEncDec.RunAES()
 #setup DB
@@ -54,7 +56,7 @@ def getballots():
             result_as_dict.append(tmp)
         myreturn["persidental_candidates"] = result_as_dict
         
-    return json.dumps(myreturn)
+    return myreturn
     
 def loadballets(data):
 	for k,v in data.iteritems():
@@ -86,6 +88,8 @@ class VotingSystem(object):
         self.rsaKey = open("key.private").read()
         self.aes = xx
         self.connections = {}
+        self.myAES = RunAES()
+
 
 
         # Do we need to check md5 or whatever?
@@ -208,9 +212,12 @@ class VotingSystem(object):
             result = c.fetchone()
             # may have to do 
             #result = result[0]
-            vid_matches = user_vid == self.aes.decrypt(user_pin, result[0])
-            ssn_matches = user_ssn == self.aes.decrypt(user_pin, result[1])
-            vid_hash_matches = user_hash == self.aes.sha255Item(user_vid)
+
+            vid_matches = user_vid == self.myAES.decrypt(user_pin, result[0])
+            ssn_matches = user_ssn == self.myAES.decrypt(user_pin, result[1])
+            random_hash = self.myAES.sha256Item_Hex(user_vid)
+            print random_hash, "printing random hash"
+            vid_hash_matches = user_hash == str(random_hash)
             if vid_matches and ssn_matches and vid_hash_matches:
                 # getBallot
                 localBallot = getballots()

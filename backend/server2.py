@@ -1,12 +1,20 @@
 port = 9999
 
 # import socket library
+import signal	# to handle Ctrl - C
+# import zmq		# to handle Ctrl - C
 import socket
 import os
 import threading
 import sys,time
 import connect
-PACKETSIZE = 4096
+
+PACKETSIZE = 16421
+
+def signal_handler(sig, stack):
+	print("Interrupt Handler Called.")
+	raise SystemExit('Exit')
+
 class serverThread (threading.Thread):
 	
 	# constructor
@@ -15,7 +23,7 @@ class serverThread (threading.Thread):
 		self.sock = c # client socket 
 		self.addr = a # ip address information
 		self.votingSystem = votingSystem
-		
+
 	# the entry point into the thread
 	def run(self):
 		
@@ -24,18 +32,18 @@ class serverThread (threading.Thread):
 		try:
 			msg = self.sock.recv(PACKETSIZE)
 			result = self.votingSystem.caller(msg)
-			self.sock.send(result)
+			print "sending this:", result
+			self.sock.send(str(result))
 			x = self.sock.recv(PACKETSIZE)
 			print x
 		finally:
 			# close socket
 			print "thread is sleeping", self.name,
 
-			time.sleep(10)
+			# time.sleep(10)
 
 			print "thread", self.name, " is going to die"
 			self.sock.close()
-			
 ###################################
 # main server thread starts here
 ###################################
@@ -53,11 +61,15 @@ print "listening on all interfaces..."
 
 # accept loop
 votingSystem = connect.VotingSystem()
+
 while True:
-	(c, addr) = s.accept()
-
-	# create a new thread and start it
-	# passes the socket to the thread as an 
-	worker = serverThread(c, addr, votingSystem)
-	worker.start()
-
+	try:
+		(c, addr) = s.accept()
+		# create a new thread and start it
+		# passes the socket to the thread as an 
+		worker = serverThread(c, addr, votingSystem)
+		worker.start()
+	except KeyboardInterrupt:
+		print("\ninterrupt received, proceeding ...")
+		sys.exit(0)
+		s.close()

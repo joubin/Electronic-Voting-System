@@ -20,6 +20,11 @@ class RunAES(object):
         secret.update(password)
         secret = secret.digest()
         return secret
+    def sha256Item_Hex(self, password):
+        secret = SHA256.new()
+        secret.update(password)
+        secret = secret.hexdigest()
+        return secret
     def encrypt(self, password, message):
         cipher = AES.new(self.sha256Item(password))
         return self.EncodeAES(cipher, message)

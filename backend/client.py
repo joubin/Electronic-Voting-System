@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import socket
+import socket, sys
 import connect
 import sampleAESEncDec 
 
@@ -9,7 +9,7 @@ xx = sampleAESEncDec.RunAES()
 
 TCP_IP = '127.0.0.1' # IP of the server
 TCP_PORT = 9999
-BUFFER_SIZE = 1024
+BUFFER_SIZE = 16421
 # MESSAGE = "Hello, World!"
 DATA = {}
 
@@ -31,5 +31,6 @@ s.connect((TCP_IP, TCP_PORT))
 s.send(MESSAGE)
 data = s.recv(BUFFER_SIZE)
 s.close()
-
-print "received data:", data
+print sys.getsizeof(data),
+print "received data:", data, 
+print sys.getsizeof(data)
