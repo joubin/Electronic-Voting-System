@@ -160,7 +160,7 @@ class VotingSystem(object):
         return private_key, public_key
 
     def _registerToVote(self, packet):
-        user_hash = myPacket[0]["vid_hash"]
+        user_hash = myPacket["vid_hash"]
         returnPacket = []
         header = {}
         header["state"] = "ballot"
@@ -228,7 +228,7 @@ class VotingSystem(object):
 
     def caller(self, packet):
         packet = self._decrypt_RSA(self.rsaKey, data)
-        self.options[str(packet[0]["state"])](packet)
+        self.options[str(packet["state"])](packet)
 
 
 
