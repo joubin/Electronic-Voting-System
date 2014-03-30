@@ -1,8 +1,6 @@
 {
   "state": "ballot",
-  "vid_hash": "somehash"
-},
-{
+  "vid_hash": "somehash",
   "proposition": [
     {
       "proposition_number": "prop5",
@@ -20,7 +18,7 @@
       "id": 53
     }
   ],
-  "presidental_candidates": [
+  "presidential_candidates": [
     {
       "party_affiliation": "Independent",
       "id": 1,
