@@ -31,6 +31,7 @@ class serverThread (threading.Thread):
 		print self.addr, " connected. Starting worker thread ", self.name,
 		try:
 			msg = self.sock.recv(PACKETSIZE)
+			print "got message", msg
 			result = self.votingSystem.caller(msg)
 			print "sending this:", result
 			self.sock.send(str(result))

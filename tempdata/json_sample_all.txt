@@ -59,7 +59,7 @@
 ## is encrypted using shared key
 
 {
-  "state": "ballotp_response",
+  "state": "ballot_response",
   "vid_hash": "somehash",
   "proposition": [
     {
