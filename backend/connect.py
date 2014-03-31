@@ -164,28 +164,14 @@ class VotingSystem(object):
         f.close() # you can omit in most cases as the destructor will call if
         return private_key, public_key
 
-    def _registerToVote(self, packet):
-        print """
-        _registerToVote got called
-
-        woop
-        woop
-        woop
-
-        """
+    def _packetCleanup(self, packet):
         myPacket = str(packet).encode('utf-8')
-        print myPacket,
         myPacket = myPacket.replace("\'","\"")
         myPacket = myPacket.replace("u\"","\"")
-        print myPacket,
-        print "asd"
         myPacket = json.loads(str(myPacket))
-        print "packet", packet
-
-        print """
-        """
-        print "myPacket", myPacket
-
+        return myPacket
+    def _registerToVote(self, packet):
+        myPacket = self._packetCleanup(packet)
         user_hash = myPacket["vid_hash"]
         print user_hash
         returnPacket = {}
@@ -240,6 +226,10 @@ class VotingSystem(object):
                 # return some of the items provided didnt match
 
         return returnPacket
+
+    def _ballot_response(self, packet):
+        pass
+
     def _submit_votes(self, packet):
         pass
 
@@ -255,8 +245,10 @@ class VotingSystem(object):
         state = decrypted_packet["state"]
         if state == "register":
             return self._registerToVote(str(jd))
+        if state == "ballot_response":
+            return self._ballot_response(str(jd))
         else:
-            print "go fuck off"
+            print "Fuck off"
         # self.options[str(decrypted_packet["state"])](decrypted_packet)
 
 
