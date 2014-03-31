@@ -1,3 +1,4 @@
+import javax.crypto.Cipher;
 import javax.swing.JFrame;
 
 import java.awt.Color;
@@ -17,6 +18,17 @@ import javax.swing.JButton;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
+import java.io.UnsupportedEncodingException;
+import java.security.KeyFactory;
+import java.security.MessageDigest;
+import java.security.PublicKey;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
 
 
@@ -144,11 +156,27 @@ public class Login extends JFrame {
 	public void actionLogin(){
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
-				char[] pssn1 = new char[] { '1', '2', '3' };
-				char[] pssn2 = new char[] {'4', '5' };
-				char[] pssn3 = new char[] {'6', '7', '8', '9' };
-				char[] tpin = new char[] { '1', '2', '3', '4' };
-				if(username.getText().equals("god") && Arrays.equals(pssn1, ssn1.getPassword()) 
+				String pssn1 = new String(ssn1.getPassword());
+				String pssn2 = new String(ssn2.getPassword());
+				String pssn3 = new String(ssn3.getPassword());
+				String tpin = new String(ppin.getPassword());
+				StringBuffer hexString = null;
+				try {
+					 MessageDigest digest = MessageDigest.getInstance("SHA-256");
+				        byte[] hash = digest.digest(username.getText().getBytes("UTF-8"));
+				        hexString = new StringBuffer();
+				        for (int i = 0; i < hash.length; i++) {
+				            String hex = Integer.toHexString(0xff & hash[i]);
+				            if(hex.length() == 1) hexString.append('0');
+				            hexString.append(hex);
+				        }
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				String js = String.format("{ \"state\": \"register\", \"vid_hash\": \"%s\", \"userInfo\": { \"vid\": \"%s\", \"ssn\": \"%s-%s-%s\", \"pin\": \"%s\"} }", hexString.toString(), username.getText(), pssn1, pssn2, pssn3, tpin);
+				
+				/*if(Arrays.equals(pssn1, ssn1.getPassword()) 
 						&& Arrays.equals(pssn2, ssn2.getPassword()) && Arrays.equals(pssn3, ssn3.getPassword()) 
 						&& Arrays.equals(tpin, ppin.getPassword())) {
 					VotingBallot vb =new VotingBallot();
@@ -159,8 +187,11 @@ public class Login extends JFrame {
 					ssn1.setText(""); ssn2.setText(""); ssn3.setText("");
 					ppin.setText("");
 					username.requestFocus();
-				}
+				}*/
+				System.out.println(js);
+				setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			}
 		});
 	}
+	
 }

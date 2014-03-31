@@ -27,6 +27,7 @@ import java.util.List;
 
 public class VotingBallot extends JFrame implements ActionListener {
 	private JParser jp;
+	private int row = 0;
 	
 	public VotingBallot() {
 		jp = new JParser();
@@ -65,17 +66,80 @@ public class VotingBallot extends JFrame implements ActionListener {
 		ballot_panel.setLayout(gbl_ballot_panel);
 		GridBagConstraints c = new GridBagConstraints();
 		
+		//prespanel
+		JPanel pres_panel = new JPanel();
+		pres_panel.setBorder(new LineBorder(new Color(0, 0, 0), 1));
+		pres_panel.setPreferredSize(new Dimension(790, 25));
+		
+		JLabel pres_msg = new JLabel("Presdential Candidates:");
+		pres_msg.setBounds(260, 14, 320, 14);
+		pres_panel.add(pres_msg);
+		
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridx = 0;
+		c.gridy = row;
+		ballot_panel.add(pres_panel, c);
+		row++;
+		
+		//pres
+		int sizeOfPres = jp.getPresidentialCandidates().size();
+		JPanel[] presPanels = new JPanel[sizeOfPres];
+		List<PresidentialCandidates> pres = jp.getPresidentialCandidates();
+		ButtonGroup group = new ButtonGroup();
+		
+		for(int i = 0; i<sizeOfPres; i++){
+			JPanel ppanel = new JPanel();
+			ppanel.setPreferredSize(new Dimension(790, 25));
+			
+			JLabel pnum = new JLabel(pres.get(i).getPartyAffiliation() + ": ");
+			JLabel msg = new JLabel(pres.get(i).getFullName());
+			msg.setBounds(260, 14, 263, 14);
+			ppanel.add(pnum);
+			ppanel.add(msg);
+			
+			JRadioButton yesButton = new JRadioButton("Yes");
+			yesButton.setActionCommand("Yes");
+			group.add(yesButton);
+			yesButton.setSelected(false);
+		    
+		    yesButton.addActionListener(this);
+		    
+		    ppanel.add(yesButton);
+			
+			c.fill = GridBagConstraints.HORIZONTAL;
+			c.gridx = 0;
+			c.gridy = row;
+			ballot_panel.add(ppanel, c);
+			presPanels[i] = ppanel;
+			row++;
+		}
+		
+		//propspanel
+		JPanel props_panel = new JPanel();
+		props_panel.setBorder(new LineBorder(new Color(0, 0, 0), 1));
+		props_panel.setPreferredSize(new Dimension(790, 25));
+		
+		JLabel props_msg = new JLabel("Propositions:");
+		props_msg.setBounds(260, 14, 320, 14);
+		props_panel.add(props_msg);
+				
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridx = 0;
+		c.gridy = row;
+		ballot_panel.add(props_panel, c);
+		row++;
+		
+		//props
 		int sizeOfProps = jp.getProposition().size();
 		JPanel[] propsPanels = new JPanel[sizeOfProps];
 		List<Proposition> props = jp.getProposition();
 		
-		for(int i = 0; i<sizeOfProps; i++){
+		for(int j = 0; j<sizeOfProps; j++){
 			JPanel ppanel = new JPanel();
-			ppanel.setBorder(new LineBorder(new Color(0, 0, 0), 1));
-			ppanel.setPreferredSize(new Dimension(790, 100));
+			ppanel.setPreferredSize(new Dimension(790, 30));
 			
-			JLabel pnum = new JLabel(props.get(i).getPropositionNumber() + ": ");
-			JLabel msg = new JLabel(props.get(i).getQuestion());
+			JLabel pnum = new JLabel(props.get(j).getPropositionNumber() + ": ");
+			JLabel msg = new JLabel(props.get(j).getQuestion());
 			msg.setBounds(260, 14, 263, 14);
 			ppanel.add(pnum);
 			ppanel.add(msg);
@@ -90,10 +154,10 @@ public class VotingBallot extends JFrame implements ActionListener {
 		    JRadioButton abButton = new JRadioButton("Abstain");
 		    abButton.setActionCommand("Abstain");
 		    
-		    ButtonGroup group = new ButtonGroup();
-		    group.add(yesButton);
-		    group.add(noButton);
-		    group.add(abButton);
+		    ButtonGroup group2 = new ButtonGroup();
+		    group2.add(yesButton);
+		    group2.add(noButton);
+		    group2.add(abButton);
 		    abButton.setSelected(true);
 		    
 		    yesButton.addActionListener(this);
@@ -106,9 +170,10 @@ public class VotingBallot extends JFrame implements ActionListener {
 			
 			c.fill = GridBagConstraints.HORIZONTAL;
 			c.gridx = 0;
-			c.gridy = i;
+			c.gridy = row;
 			ballot_panel.add(ppanel, c);
-			propsPanels[i] = ppanel;
+			propsPanels[j] = ppanel;
+			row++;
 		}
 		
 		JPanel panel1 = new JPanel();
@@ -116,7 +181,7 @@ public class VotingBallot extends JFrame implements ActionListener {
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weighty = 1.0;
 		c.gridx = 0;
-		c.gridy = sizeOfProps;
+		c.gridy = row;
 		ballot_panel.add(panel1, c);
 		
 		JScrollPane scroller = new JScrollPane(ballot_panel);
@@ -129,6 +194,7 @@ public class VotingBallot extends JFrame implements ActionListener {
 		this.setResizable(false);
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
 	@Override
