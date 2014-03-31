@@ -82,13 +82,14 @@ public class AdminLogin extends JFrame {
 		passwordField_3.setBounds(0, 50, 118, 20);
 		panel_2.add(passwordField_3);
 		
-		SizeDocumentFilter sf1 = new SizeDocumentFilter(3);
-		sf1.installFilter(ssn1);
-		SizeDocumentFilter sf2 = new SizeDocumentFilter(2);
-		sf2.installFilter(ssn2);
-		SizeDocumentFilter sf3 = new SizeDocumentFilter(4);
-		sf3.setAutoTab(false);
-		sf3.installFilter(ssn3);
+//		SizeDocumentFilter sf1 = new SizeDocumentFilter(3);
+//		sf1.installFilter(ssn1);
+//		SizeDocumentFilter sf2 = new SizeDocumentFilter(2);
+//		sf2.installFilter(ssn2);
+//		SizeDocumentFilter sf3 = new SizeDocumentFilter(4);
+//		sf3.setAutoTab(false);
+//		sf3.installFilter(ssn3);
+		
 		setVisible(true);
 	}
 }

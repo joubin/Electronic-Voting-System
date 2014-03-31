@@ -20,6 +20,8 @@ def getData():
 	print("Receivng Data ...")
 	data = s.recv(BUFFER_SIZE)
 	return data
+def testJava(num):
+	return num**2
 # s.close()
 
-print "received data:", data
+# print "received data:", data
