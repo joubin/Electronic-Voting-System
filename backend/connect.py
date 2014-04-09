@@ -209,7 +209,7 @@ class VotingSystem(object):
                 localBallot = getballots()
                 for k,v in localBallot.iteritems():
                     returnPacket[k] = v
-                returnPacket["state"] = "ballot"
+                self._ballot_response(returnPacket)
             else:
                 print "some shit got fucked"
                 returnPacket["state"] = "wrong info"
@@ -228,7 +228,33 @@ class VotingSystem(object):
         # return returnPacket
 
     def _ballot_response(self, packet):
-        pass
+        packet["state"] = "ballot"
+        sql = "select * from proposition;"
+        result = c.execute(sql)
+        if result:
+            result = c.fetchall()
+            result_as_dict = []
+            for r in result:
+                tmp = {
+                    "id" : r[0],
+                    "proposition_number" : r[1],
+                    "question" : r[2]}
+                result_as_dict.append(tmp)
+            
+            packet["proposition"] = result_as_dict
+        sql = "select * from candidates;"
+        result = c.execute(sql)
+        if result:
+            result = c.fetchall()
+            result_as_dict = []
+            for r in result:
+                tmp = {
+                    "id" : r[0],
+                    "full_name" : r[1],
+                    "party_affiliation" : r[2]}
+                result_as_dict.append(tmp)
+            packet["persidental_candidates"] = result_as_dict
+            return packet
 
     def _submit_votes(self, packet):
         pass
@@ -256,8 +282,9 @@ class VotingSystem(object):
 
 
 
-# if __name__ == '__main__':
-#     # vs = VotingSystem()
-#     # vs._registerToVote("data")
-#     print getballots()
-#     pass
+if __name__ == '__main__':
+    vs = VotingSystem()
+    # vs._registerToVote("data")
+    packet = {}
+    print vs._ballot_response(packet)
+    pass
