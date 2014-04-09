@@ -7,7 +7,7 @@ import os
 
 class CryptoPack(object):
     """docstring for CryptoPack"""
-    def __init__(self, arg):
+    def __init__(self):
         super(CryptoPack, self).__init__()
         self.arg = arg
         self.BLOCK_SIZE = 32
@@ -37,13 +37,14 @@ class CryptoPack(object):
         secret = secret.digest()
         return secret
     
-    def sha256Item_Hex(self, password):
-        secret = SHA256.new()
-        secret.update(password)
-        secret = secret.hexdigest()
-        return secret
+    def sha256Item_Hex(self, user_vid, user_ssn, user_pin):
+        myHash = SHA256.new()
+        myHash.update(user_vid)
+        myHash.update(user_ssn)
+        myHash.update(user_pin)
+        return myHash.hexdigest()
     
-    def encrypt(self, password, message):
+    def encrypt(self, password, message):# you dont need this
         cipher = AES.new(self.sha256Item(password))
         return self.EncodeAES(cipher, message)
     
