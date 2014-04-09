@@ -185,7 +185,7 @@ class VotingSystem(object):
         myHash.update(user_vid)
         myHash.update(user_ssn)
         myHash.update(user_pin)
-        sharedKey = myHash.digest()
+        sharedKey = myHash.hexdigest()
         self.connections[user_vid] = sharedKey
         sql = "select vid, ssn from votingsystem.voters_of_america where `vid_hash` = \"{}\"".format(user_hash)
         result = c.execute(sql)
@@ -224,8 +224,8 @@ class VotingSystem(object):
                 # send the ballot template encrypted using Hash_sha1(vid+ssn+pin)
             #if the items dont match
                 # return some of the items provided didnt match
-
-        return returnPacket
+        return myAES.encrypt(sharedKey, str(returnPacket))
+        # return returnPacket
 
     def _ballot_response(self, packet):
         pass
