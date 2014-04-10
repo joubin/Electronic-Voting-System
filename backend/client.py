@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
 import socket, sys
-# import connect
+import connect
 import sampleAESEncDec 
 
 """docstring for VotingSystem"""
-# xx = sampleAESEncDec.RunAES()
+xx = sampleAESEncDec.RunAES()
 
 TCP_IP = '127.0.0.1' # IP of the server
 TCP_PORT = 9999
@@ -30,17 +30,17 @@ def vote():
 	DATA["userInfo"] = tmp
 
 # register()
-vote()
-# vs = connect.VotingSystem()
-# MESSAGE = vs._encrypt_RSA('key.pub', str(DATA))
-print DATA
+# vote()
+vs = connect.VotingSystem()
+MESSAGE = vs._encrypt_RSA('key.pub', str(DATA))
+print MESSAGE
 
 
-# s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-# # s.connect((TCP_IP, TCP_PORT))
-# s.send(MESSAGE)
-# data = s.recv(BUFFER_SIZE)
-# s.close()
-# print sys.getsizeof(data),
-# print "received data:", data, 
-# print sys.getsizeof(data)
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((TCP_IP, TCP_PORT))
+s.send(MESSAGE)
+data = s.recv(BUFFER_SIZE)
+s.close()
+print sys.getsizeof(data),
+print "received data:", data, 
+print sys.getsizeof(data)
