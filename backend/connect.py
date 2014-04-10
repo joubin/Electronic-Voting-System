@@ -124,7 +124,9 @@ class VotingSystem(object):
         key = open('key.private', "r").read() 
         rsakey = RSA.importKey(key) 
         rsakey = PKCS1_OAEP.new(rsakey) 
-        decrypted = rsakey.decrypt(b64decode(package)) 
+
+        decrypted = rsakey.decrypt(package)
+        # decrypted = rsakey.decrypt(b64decode(package)) 
         return decrypted
 
     def _sign_data(self, private_key_loc, data):

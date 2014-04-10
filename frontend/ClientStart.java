@@ -24,7 +24,7 @@ public class ClientStart {
 
 	public static void main(String[] args) {
 		PythonInterpreter interpreter = new PythonInterpreter();	// SETS UP THE INTERPRETER
-		interpreter.exec("from Crypto import encrypt_RSA");									// FROM TEST.PY WE ARE IMPORTING THE DEF TMP
+		interpreter.exec("from hello import encrypt_RSA");									// FROM TEST.PY WE ARE IMPORTING THE DEF TMP
 		PyObject someFunc = interpreter.get("encrypt_RSA");
 		PyObject result = someFunc.__call__(new PyString("./"), new PyString("hello world"));
 		// SIMPLY CONVERT RESULT FROM PYTHON TO JAVA, SINCE WE EXPECT AN INT, WE USE INTEGER.CLASS
