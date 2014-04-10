@@ -156,6 +156,7 @@ public class Login extends JFrame {
 	public void actionLogin(){
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
+				String un = new String(username.getText());
 				String pssn1 = new String(ssn1.getPassword());
 				String pssn2 = new String(ssn2.getPassword());
 				String pssn3 = new String(ssn3.getPassword());
@@ -176,9 +177,7 @@ public class Login extends JFrame {
 				}
 				String js = String.format("{ \"state\": \"register\", \"vid_hash\": \"%s\", \"userInfo\": { \"vid\": \"%s\", \"ssn\": \"%s-%s-%s\", \"pin\": \"%s\"} }", hexString.toString(), username.getText(), pssn1, pssn2, pssn3, tpin);
 				
-				/*if(Arrays.equals(pssn1, ssn1.getPassword()) 
-						&& Arrays.equals(pssn2, ssn2.getPassword()) && Arrays.equals(pssn3, ssn3.getPassword()) 
-						&& Arrays.equals(tpin, ppin.getPassword())) {
+				if(un.equals("god") && pssn1.equals("123") && pssn2.equals("45") && pssn3.equals("6789") && tpin.equals("1234")) {
 					VotingBallot vb =new VotingBallot();
 					dispose();
 				} else {
@@ -187,7 +186,7 @@ public class Login extends JFrame {
 					ssn1.setText(""); ssn2.setText(""); ssn3.setText("");
 					ppin.setText("");
 					username.requestFocus();
-				}*/
+				}
 				System.out.println(js);
 				setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			}
