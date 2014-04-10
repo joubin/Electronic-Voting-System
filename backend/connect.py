@@ -209,7 +209,7 @@ class VotingSystem(object):
                 localBallot = getballots()
                 for k,v in localBallot.iteritems():
                     returnPacket[k] = v
-                print type(returnPacket)
+                print "1", type(returnPacket)
                 self._ballot_response(returnPacket)
             else:
                 print "some shit got fucked"
@@ -229,7 +229,7 @@ class VotingSystem(object):
         # return returnPacket
 
     def _ballot_response(self, packet):
-        print type(packet)
+        print "2", type(packet)
         packet["state"] = "ballot"
         sql = "select * from proposition;"
         result = c.execute(sql)
