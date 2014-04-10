@@ -30,7 +30,7 @@ def vote():
 	DATA["userInfo"] = tmp
 
 # register()
-# vote()
+vote()
 vs = connect.VotingSystem()
 MESSAGE = vs._encrypt_RSA('key.pub', str(DATA))
 print MESSAGE
