@@ -16,7 +16,6 @@ IMPORTANT!!!
 
 //NECESSARY IMPORTS
 import org.python.core.PyInteger;
-import org.python.core.PyString;
 import org.python.core.PyObject;
 import org.python.util.PythonInterpreter;
 
@@ -24,11 +23,13 @@ public class ClientStart {
 
 	public static void main(String[] args) {
 		PythonInterpreter interpreter = new PythonInterpreter();	// SETS UP THE INTERPRETER
-		interpreter.exec("from Crypto import encrypt_RSA");									// FROM TEST.PY WE ARE IMPORTING THE DEF TMP
-		PyObject someFunc = interpreter.get("encrypt_RSA");
-		PyObject result = someFunc.__call__(new PyString("./"), new PyString("hello world"));
+		interpreter.exec("from test import tmp");									// FROM TEST.PY WE ARE IMPORTING THE DEF TMP
+		PyObject someFunc = interpreter.get("tmp");								// NOW WE PUT THE FUNCTION INTO AN ACTUAL OBJECT SO WE CAN USE IT
+		// WE SIMPLY CALL IT AND PLACE THE RESULT IN ANOTHER OBJECT
+		// THE FUNCTION TMP REQUIRES 2 INT ARGS, SO THATS WHY WE HAVE TO MAKE 2 NEW PYTHON INTEGERS, PASSING JAVA INTS WON'T WORK
+		PyObject result = someFunc.__call__(new PyInteger(5), new PyInteger(7));
 		// SIMPLY CONVERT RESULT FROM PYTHON TO JAVA, SINCE WE EXPECT AN INT, WE USE INTEGER.CLASS
-		String realResult = (String) result.__tojava__(String.class);
+		int realResult = (int) result.__tojava__(Integer.class);
 		System.out.println(realResult);
 	}
 
