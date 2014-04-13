@@ -23,7 +23,7 @@ public class EncDecRSAv2 {
     }
 
     public static byte[] encrypt(PublicKey publicKey, String text) throws GeneralSecurityException {
-        Cipher rsa = Cipher.getInstance("RSA/None/PKCS1Padding", "BC");
+        Cipher rsa = Cipher.getInstance("RSA/ECB/OAEPWithSHA1AndMGF1Padding", "BC");
         rsa.init(Cipher.ENCRYPT_MODE, publicKey);
         return rsa.doFinal(text.getBytes());
     }
@@ -63,7 +63,7 @@ public class EncDecRSAv2 {
         DataOutputStream os = null;
         DataInputStream is = null;
         try {
-            smtpSocket = new Socket("localhost", 9999);
+            smtpSocket = new Socket("172.16.186.133", 9999);
             os = new DataOutputStream(smtpSocket.getOutputStream());
             is = new DataInputStream(smtpSocket.getInputStream());
         } catch (UnknownHostException e) {
@@ -75,7 +75,7 @@ public class EncDecRSAv2 {
         if (smtpSocket != null && os != null && is != null) {
             try {
                 System.out.println("sending message");
-                os.writeBytes(sendMessage+"\n");
+                os.writeBytes(encryptedDATA+"\n");
                 os.close();
                 is.close();
                 smtpSocket.close();
