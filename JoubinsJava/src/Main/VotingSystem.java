@@ -9,6 +9,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,23 +38,34 @@ public class VotingSystem {
         String decryptedPacket = null;
         JSONObject packetObject = null;
         try {
-            if (packet.toString().contains("vid_hash")){
+            String packetAsString = new String(packet);
+            if (packetAsString.contains("vid_hash")){
                 System.out.print("AES Encrypted");
+                System.out.print("Doing the right thing so ill exit");
+                String string = new String(packet);
+                String normalized_string = Normalizer.normalize(string, Normalizer.Form.NFD).replaceAll("\u0000", "");
+                System.out.println(normalized_string);
+                System.out.println(new String(packetAsString.getBytes("UTF-8")));
+                packetObject = stringToJson(normalized_string);
+                System.out.println(packetObject.get("vid_hash"));
+                System.exit(99);
+
             }else{
             byte[] decryptedByteArray = cryptoToolKit.rsaDecrypt(packet);
                 Random rand = new Random();
                 String incoming = new String(decryptedByteArray);
+                String[] incomingArr = incoming.split(",");
                 Integer random = rand.nextInt();
-                String outGoing = random.toString().getBytes().toString();
-                String[] keySet = {incoming, outGoing};
-                byte[] myKey = cryptoToolKit.sha256digest(keySet);
+                String myRandom = random.toString().getBytes().toString();
+                String outGoing = myRandom;
+                String[] keySet = {incomingArr[1], outGoing};
+                byte[] myKey = cryptoToolKit.mySha256(keySet);
                 String myKeyString = new String(myKey);
-                setKeyForUser(incoming, myKeyString);
-                System.out.print("key is "+myKeyString);
+                setKeyForUser(incomingArr[0], myKeyString);
+                System.out.print("for user "+incomingArr[0]+"key is "+myKeyString);
                 return outGoing;
             }
             System.out.print("asdasdasd is " + decryptedPacket);
-            System.exit(1);
 //            packetObject = stringToJson(decryptedPacket.toString());
 
         } catch (Exception e) {
@@ -76,7 +88,7 @@ public class VotingSystem {
         return null;
     }
 
-    private String register(JSONObject packet) throws SQLException {
+    private byte[] register(JSONObject packet) throws SQLException {
         String user_hash = packet.get("vid_hash").toString();
         JSONObject userInfo = (JSONObject) packet.get("userInfo");
         String userProvided_pin = userInfo.get("pin").toString();
@@ -124,7 +136,7 @@ public class VotingSystem {
                 returnPacket.put("presidential_candidates", ballot.get("presidential_candidates"));
                 String returnPacketString = returnPacket.toString();
                 try {
-                   return cryptoToolKit.encrypt(sharedKey.toString().getBytes(), returnPacketString);
+                   return cryptoToolKit.encrypt((new String(sharedKey)).getBytes(), returnPacketString);
                 } catch (Exception e) {
                     System.out.println("Could not encrypt the string going out client " + e);
                     e.printStackTrace();
@@ -137,7 +149,7 @@ public class VotingSystem {
 
 
 
-        return returnPacket.toJSONString();
+        return returnPacket.toJSONString().getBytes();
 
     }
 

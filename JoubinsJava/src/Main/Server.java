@@ -47,17 +47,17 @@ My stuff
 */
 
 
-            System.out.println("1");
+//            System.out.println("1");
 //            BufferedReader inFromClient = new BufferedReader(new InputStreamReader(this.csocket.getInputStream()));
             InputStream stream = this.csocket.getInputStream();
             byte[] bs = new byte[256];
             int count = stream.read(bs);
 //            byte[] bs = this.csocket.getInputStream();
-            System.out.println(count);
+//            System.out.println(count);
 
-            System.out.println("3");
+//            System.out.println("3");
 //            String clientSentence = inFromClient.readLine();
-            System.out.println("4");
+//            System.out.println("4");
 //            System.out.println("Received: " + clientSentence);
             String response = null;
             try {
