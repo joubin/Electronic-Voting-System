@@ -25,7 +25,7 @@ public class VSCrypt {
 //        }
 //    }
 
-    public  byte[] encrypt(byte[] key,String strToEncrypt) throws Exception {
+    public  byte[] encrypt(byte[] key, String strToEncrypt) throws Exception {
         try {
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             final SecretKeySpec secretKey = new SecretKeySpec(Arrays.copyOf(key, 16), "AES");

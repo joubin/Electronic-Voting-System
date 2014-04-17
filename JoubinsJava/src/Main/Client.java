@@ -71,12 +71,12 @@ class Client
             data.put("vid", vid);
             data.put("ssn", ssn);
             data.put("pin", pin);
-            byte[] encryptedData = toolKit.encrypt(finalKey, data.toJSONString());
+            byte[] encryptedData = toolKit.encrypt(finalKey, data.toString());
             dataToSend.put("userInfo", new String(encryptedData));
 //            outToServer.write(toolKit.encrypt(finalKey, dataToSend.toJSONString()));
             outToServer.write(dataToSend.toString().getBytes());
             returnedString = inFromServer.readLine();
-            System.out.print("\n finally we have: " + returnedString);
+            System.out.print("\n finally we have: " + new String(finalKey));
 
         }
 

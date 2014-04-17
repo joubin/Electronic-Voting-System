@@ -45,9 +45,16 @@ public class VotingSystem {
                 String string = new String(packet);
                 String normalized_string = Normalizer.normalize(string, Normalizer.Form.NFD).replaceAll("\u0000", "");
                 System.out.println(normalized_string);
-                System.out.println(new String(packetAsString.getBytes("UTF-8")));
                 packetObject = stringToJson(normalized_string);
-                System.out.println(packetObject.get("vid_hash"));
+                String vid_hash = packetObject.get("vid_hash").toString();
+                String userinfo = new String(packetObject.get("userInfo").toString());
+                byte[] key = activeUsers.get(vid_hash).toString().getBytes();
+                byte[] decryptedBytes = cryptoToolKit.decrypt(key, userinfo);
+                String decryptedStuff = new String(decryptedBytes);
+                JSONObject userInfoObject = new JSONObject();
+                userInfoObject = stringToJson(decryptedStuff.toString());
+                System.out.println("key is: "+new String(key)+"\nvid_hash is: "+vid_hash +"\nuser info is "+userInfoObject.toJSONString());
+                System.out.println(decryptedPacket);
                 System.exit(99);
 
             }else{
