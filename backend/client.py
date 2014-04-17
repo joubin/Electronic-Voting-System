@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import socket, sys
-import connect
+# import connect
 import sampleAESEncDec 
 
 """docstring for VotingSystem"""
@@ -31,16 +31,16 @@ def vote():
 
 # register()
 # vote()
-vs = connect.VotingSystem()
-MESSAGE = vs._encrypt_RSA('key.pub', str(DATA))
-print MESSAGE
-
+# vs = connect.VotingSystem()
+# MESSAGE = vs._encrypt_RSA('key.pub', str(DATA))
+# print MESSAGE
+MESSAGE = "hello1233"
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((TCP_IP, TCP_PORT))
 s.send(MESSAGE)
 data = s.recv(BUFFER_SIZE)
 s.close()
-print sys.getsizeof(data),
+# print sys.getsizeof(data),
 print "received data:", data, 
 print sys.getsizeof(data)
