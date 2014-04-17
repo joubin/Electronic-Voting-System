@@ -45,6 +45,8 @@ public class Login extends JFrame {
 	private JLabel label_1;
 	private JButton btnLogin;
 	
+	private static VSCrypt cryptoToolKit = null;
+	
 	public Login() {
 		initializeLogin();
 	}
@@ -161,12 +163,10 @@ public class Login extends JFrame {
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				String un = new String(username.getText());
-				String pssn1 = new String(ssn1.getPassword());
-				String pssn2 = new String(ssn2.getPassword());
-				String pssn3 = new String(ssn3.getPassword());
+				String pssn = new String(ssn1.getPassword()) + "-" + new String(ssn2.getPassword()) + "-" + new String(ssn3.getPassword());
 				String tpin = new String(ppin.getPassword());
 				StringBuffer hexString = null;
-				try {
+				/*try {
 					MessageDigest digest = MessageDigest.getInstance("SHA-256");
 				    byte[] hash = digest.digest(username.getText().getBytes("UTF-8"));
 				    hexString = new StringBuffer();
@@ -177,10 +177,10 @@ public class Login extends JFrame {
 				    }
 				} catch (Exception e) {
 					e.printStackTrace();
-				}
-				String js = String.format("{ \"state\": \"register\", \"vid_hash\": \"%s\", \"userInfo\": { \"vid\": \"%s\", \"ssn\": \"%s-%s-%s\", \"pin\": \"%s\"} }", hexString.toString(), username.getText(), pssn1, pssn2, pssn3, tpin);
+				}*/
+				String js = String.format("{ \"state\": \"register\", \"vid_hash\": \"%s\", \"userInfo\": { \"vid\": \"%s\", \"ssn\": \"%s\", \"pin\": \"%s\"} }", hexString.toString(), username.getText(), pssn, tpin);
 				
-				if(un.equals("god") && pssn1.equals("123") && pssn2.equals("45") && pssn3.equals("6789") && tpin.equals("1234")) {
+				if(un.equals("god") && pssn.equals("123-45-6789") && tpin.equals("1234")) {
 					VotingBallot vb =new VotingBallot();
 					dispose();
 				} else {
@@ -190,7 +190,7 @@ public class Login extends JFrame {
 					ppin.setText("");
 					username.requestFocus();
 				}
-				System.out.println(js);
+				//System.out.println(js);
 				setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			}
 		});
