@@ -34,7 +34,7 @@ def vote():
 # vs = connect.VotingSystem()
 # MESSAGE = vs._encrypt_RSA('key.pub', str(DATA))
 # print MESSAGE
-MESSAGE = "hello1233"
+MESSAGE = "hello1233\n"
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((TCP_IP, TCP_PORT))

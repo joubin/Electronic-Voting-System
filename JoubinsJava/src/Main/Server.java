@@ -1,9 +1,6 @@
 package Main;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -23,21 +20,44 @@ public class Server implements Runnable {
         System.out.println("Listening");
         while (true) {
             Socket sock = ssock.accept();
+
+
+            //
+
+
+            //
+
+
             System.out.println("Connected");
             new Thread(new Server(sock)).start();
         }
     }
     public void run() {
         try {
-            BufferedReader inFromClient;
-            inFromClient = new BufferedReader(csocket.getInputStream());
-            DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
+
             PrintStream pstream = new PrintStream
                     (csocket.getOutputStream());
-            for (int i = 100; i >= 0; i--) {
-                pstream.println(i +
-                        " bottles of beer on the wall");
-            }
+/*
+My stuff
+*/
+
+
+            System.out.println("1");
+            BufferedReader inFromClient = new BufferedReader(new InputStreamReader(this.csocket.getInputStream()));
+            System.out.println("2");
+
+            DataOutputStream outToClient = new DataOutputStream(this.csocket.getOutputStream());
+            System.out.println("3");
+            String clientSentence = inFromClient.readLine();
+            System.out.println("4");
+            System.out.println("Received: " + clientSentence);
+
+
+  /*
+  end my stuff
+   */
+
+                pstream.println(" bottles of beer on the wall");
             pstream.close();
             csocket.close();
         }
@@ -46,3 +66,6 @@ public class Server implements Runnable {
         }
     }
 }
+
+
+
