@@ -3,11 +3,16 @@ import java.security.KeyFactory;
 import java.security.spec.RSAPublicKeySpec;
 import java.security.spec.RSAPrivateKeySpec;
 import javax.crypto.*;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.io.*;
 import java.math.BigInteger;
+import org.apache.common.codec.binary.Base64;
 
 public class VSCrypt {
+
+private static byte[] key = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16};
+
 	public VSCrypt() throws Exception {
 		try {
 			RSA_Generator();
@@ -15,6 +20,33 @@ public class VSCrypt {
 			throw new Exception("Could not instantiate RSA Generator", e );
 		}
 	}
+
+	public static String encrypt(String strToEncrypt) throws Exception {
+        try {
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            final SecretKeySpec secretKey = new SecretKeySpec(key, "AES");
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+            final String encryptedString = Base64.encodeBase64String(cipher.doFinal(strToEncrypt.getBytes()));
+            return encryptedString;
+        } catch (Exception e) {
+            throw new Exception("Error in AES Encryption", e);
+        }
+        return null;
+    }
+
+    public static String decrypt(String strToDecrypt) throws Exception {
+        try {
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
+            final SecretKeySpec secretKey = new SecretKeySpec(key, "AES");
+            cipher.init(Cipher.DECRYPT_MODE, secretKey);
+            final String decryptedString = new String(cipher.doFinal(Base64.decodeBase64(strToDecrypt)));
+            return decryptedString;
+        } catch (Exception e) {
+            throw new Exception("Error in AES Decryption", e);
+		}
+        return null;
+    }
+
 	public byte[] rsaEncrypt( byte[] data ) throws Exception {
 		PublicKey pubkey;
 		Cipher cipher;
