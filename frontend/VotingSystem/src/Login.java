@@ -46,6 +46,10 @@ public class Login extends JFrame {
 	private JButton btnLogin;
 	
 	public Login() {
+		initializeLogin();
+	}
+	
+	private void initializeLogin(){
 		setTitle("Voting System");
 		setSize(450,300);
 		getContentPane().setBackground(Color.WHITE);

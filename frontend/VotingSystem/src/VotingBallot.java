@@ -30,6 +30,10 @@ public class VotingBallot extends JFrame implements ActionListener {
 	private int row = 0;
 	
 	public VotingBallot() {
+		initializeBallot();
+	}
+	
+	private void initializeBallot(){
 		jp = new JParser();
 		this.setSize(800,600);
 		this.setTitle("Voting Ballot");
