@@ -167,16 +167,15 @@ public class Login extends JFrame {
 				String tpin = new String(ppin.getPassword());
 				StringBuffer hexString = null;
 				try {
-					 MessageDigest digest = MessageDigest.getInstance("SHA-256");
-				        byte[] hash = digest.digest(username.getText().getBytes("UTF-8"));
-				        hexString = new StringBuffer();
-				        for (int i = 0; i < hash.length; i++) {
-				            String hex = Integer.toHexString(0xff & hash[i]);
-				            if(hex.length() == 1) hexString.append('0');
-				            hexString.append(hex);
-				        }
+					MessageDigest digest = MessageDigest.getInstance("SHA-256");
+				    byte[] hash = digest.digest(username.getText().getBytes("UTF-8"));
+				    hexString = new StringBuffer();
+				    for (int i = 0; i < hash.length; i++) {
+				    	String hex = Integer.toHexString(0xff & hash[i]);
+				        if(hex.length() == 1) hexString.append('0');
+				        hexString.append(hex);
+				    }
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				String js = String.format("{ \"state\": \"register\", \"vid_hash\": \"%s\", \"userInfo\": { \"vid\": \"%s\", \"ssn\": \"%s-%s-%s\", \"pin\": \"%s\"} }", hexString.toString(), username.getText(), pssn1, pssn2, pssn3, tpin);

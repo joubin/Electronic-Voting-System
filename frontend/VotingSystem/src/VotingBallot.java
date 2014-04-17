@@ -2,6 +2,7 @@ import javax.swing.JFrame;
 
 import java.awt.Color;
 
+import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JButton;
@@ -12,6 +13,7 @@ import javax.swing.JScrollBar;
 import java.awt.Font;
 
 import javax.swing.border.LineBorder;
+import javax.swing.text.View;
 import javax.swing.JScrollPane;
 
 import java.awt.Dimension;
@@ -22,12 +24,15 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.Enumeration;
 import java.util.List;
 
 
 public class VotingBallot extends JFrame implements ActionListener {
 	private JParser jp;
 	private int row = 0;
+	private ButtonGroup[] propsButtons;
+	private JRadioButton[] selectedPres;
 	
 	public VotingBallot() {
 		initializeBallot();
@@ -63,6 +68,7 @@ public class VotingBallot extends JFrame implements ActionListener {
 		
 		JButton btnSubmit = new JButton("Submit");
 		btnSubmit.setBounds(347, 5, 89, 23);
+		btnSubmit.addActionListener(this);
 		submit_panel.add(btnSubmit);
 		
 		JPanel ballot_panel = new JPanel();
@@ -85,11 +91,12 @@ public class VotingBallot extends JFrame implements ActionListener {
 		ballot_panel.add(pres_panel, c);
 		row++;
 		
-		//pres
+		//presidential candidates
 		int sizeOfPres = jp.getPresidentialCandidates().size();
 		JPanel[] presPanels = new JPanel[sizeOfPres];
 		List<PresidentialCandidates> pres = jp.getPresidentialCandidates();
 		ButtonGroup group = new ButtonGroup();
+		selectedPres = new JRadioButton[sizeOfPres];
 		
 		for(int i = 0; i<sizeOfPres; i++){
 			JPanel ppanel = new JPanel();
@@ -101,14 +108,14 @@ public class VotingBallot extends JFrame implements ActionListener {
 			ppanel.add(pnum);
 			ppanel.add(msg);
 			
-			JRadioButton yesButton = new JRadioButton("Yes");
-			yesButton.setActionCommand("Yes");
-			group.add(yesButton);
-			yesButton.setSelected(false);
+			selectedPres[i] = new JRadioButton("Yes");
+			selectedPres[i].setActionCommand("Yes");
+			group.add(selectedPres[i]);
+			selectedPres[i].setSelected(false);
 		    
-		    yesButton.addActionListener(this);
+		    //yesButton.addActionListener(this);
 		    
-		    ppanel.add(yesButton);
+		    ppanel.add(selectedPres[i]);
 			
 			c.fill = GridBagConstraints.HORIZONTAL;
 			c.gridx = 0;
@@ -133,10 +140,11 @@ public class VotingBallot extends JFrame implements ActionListener {
 		ballot_panel.add(props_panel, c);
 		row++;
 		
-		//props
+		//propositions
 		int sizeOfProps = jp.getProposition().size();
 		JPanel[] propsPanels = new JPanel[sizeOfProps];
 		List<Proposition> props = jp.getProposition();
+		propsButtons = new ButtonGroup[sizeOfProps];
 		
 		for(int j = 0; j<sizeOfProps; j++){
 			JPanel ppanel = new JPanel();
@@ -158,15 +166,15 @@ public class VotingBallot extends JFrame implements ActionListener {
 		    JRadioButton abButton = new JRadioButton("Abstain");
 		    abButton.setActionCommand("Abstain");
 		    
-		    ButtonGroup group2 = new ButtonGroup();
-		    group2.add(yesButton);
-		    group2.add(noButton);
-		    group2.add(abButton);
+		    propsButtons[j] = new ButtonGroup();
+		    propsButtons[j].add(yesButton);
+		    propsButtons[j].add(noButton);
+		    propsButtons[j].add(abButton);
 		    abButton.setSelected(true);
 		    
-		    yesButton.addActionListener(this);
+		    /*yesButton.addActionListener(this);
 		    noButton.addActionListener(this);
-		    abButton.addActionListener(this);
+		    abButton.addActionListener(this);*/
 		    
 		    ppanel.add(yesButton);
 		    ppanel.add(noButton);
@@ -203,6 +211,27 @@ public class VotingBallot extends JFrame implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
+		for(int i = 0; i < selectedPres.length; i++){
+			if(selectedPres[i].isSelected()){
+				System.out.println(i);
+			}
+		}
 		
+		for(int i = 0; i < propsButtons.length; i++){
+			String s = getSelectedButtonText(propsButtons[i]);
+			System.out.println(s);
+		}
 	}
+	
+	public String getSelectedButtonText(ButtonGroup buttonGroup) {
+        for (Enumeration<AbstractButton> buttons = buttonGroup.getElements(); buttons.hasMoreElements();) {
+            AbstractButton button = buttons.nextElement();
+
+            if (button.isSelected()) {
+                return button.getText();
+            }
+        }
+
+        return null;
+    }
 }
