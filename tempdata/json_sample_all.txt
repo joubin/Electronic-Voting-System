@@ -1,106 +1,122 @@
 # Client sends on regestraton
 ## Should be encrypted using server public key
-
 {
-  "state": "register",
-  "vid_hash": "somehash",
-  "userInfo": {
-    "vid": "UserID",
-    "ssn": "123-45-6789",
-    "pin": "hello123"
+  "vid_hash": "somehash”,
+  "data": {
+    "state": "register",
+    "userInfo": {
+      "vid": "UserID",
+      "ssn": "123-45-6789",
+      "pin": "hello123"
+    }
   }
 }
-
 
 # Server sends to client
 ## should be encrypted using shared key
 
 
 {
-  "state": "ballot",
   "vid_hash": "somehash",
-  "proposition": [
-    {
-      "proposition_number": "prop5",
-      "question": "move to legalaize marry  j",
-      "id": 51
-    },
-    {
-      "proposition_number": "prop6",
-      "question": "move to legalaize monkey bars ",
-      "id": 52
-    },
-    {
-      "proposition_number": "prop57",
-      "question": "move to legalaize michael jackson ",
-      "id": 53
-    }
-  ],
-  "presidential_candidates": [
-    {
-      "party_affiliation": "Independent",
-      "id": 1,
-      "full_name": "Rick S"
-    },
-    {
-      "party_affiliation": "Republican",
-      "id": 2,
-      "full_name": "Mike J"
-    },
-    {
-      "party_affiliation": "democrat",
-      "id": 3,
-      "full_name": "Alex R"
-    }
-  ]
+  "data": {
+    "state": "ballot",
+    "proposition": [
+      {
+        "proposition_number": "prop5",
+        "question": "move to legalaize marry  j",
+        "id": 51
+      },
+      {
+        "proposition_number": "prop6",
+        "question": "move to legalaize monkey bars ",
+        "id": 52
+      },
+      {
+        "proposition_number": "prop57",
+        "question": "move to legalaize michael jackson ",
+        "id": 53
+      }
+    ],
+    "presidential_candidates": [
+      {
+        "party_affiliation": "Independent",
+        "id": 1,
+        "full_name": "Rick S"
+      },
+      {
+        "party_affiliation": "Republican",
+        "id": 2,
+        "full_name": "Mike J"
+      },
+      {
+        "party_affiliation": "democrat",
+        "id": 3,
+        "full_name": "Alex R"
+      }
+    ]
+  }
 }
 
-# Client Reponse to ballot
+# Server sends to client
+## failed authentication
+{
+  "vid_hash": "somehash",
+  "data": {
+    "state": “error”,
+    “errorMessage”: “Voter not authenticated”,
+  }
+}
+
+# Client Response to ballot
 ## is encrypted using shared key
 
 {
-  "state": "ballot_response",
   "vid_hash": "somehash",
-  "proposition": [
-    {
-      "proposition_number": "prop5",
-      "answer": "1",
-      "id": 51
-    },
-    {
-      "proposition_number": "prop6",
-      "answer": "2",
-      "id": 52
-    },
-    {
-      "proposition_number": "prop57",
-      "answer": "3",
-      "id": 53
-    }
-  ],
-  "presidential_candidates": [
-    {
-      "pick": "true",
-      "id": 1,
-      "full_name": "Rick S"
-    },
-    {
-      "pick": "false",
-      "id": 2,
-      "full_name": "Mike J"
-    },
-    {
-      "pick": "false",
-      "id": 3,
-      "full_name": "Alex R"
-    }
-  ]
+  "data": {
+    "state": "ballot_response",
+    "proposition": [
+      {
+        "proposition_number": "prop5",
+        "answer": "1",
+        "id": 51
+      },
+      {
+        "proposition_number": "prop6",
+        "answer": "2",
+        "id": 52
+      },
+      {
+        "proposition_number": "prop57",
+        "answer": "3",
+        "id": 53
+      }
+    ],
+    "presidential_candidates": [
+      {
+        "pick": "true",
+        "id": 1,
+        "full_name": "Rick S"
+      },
+      {
+        "pick": "false",
+        "id": 2,
+        "full_name": "Mike J"
+      },
+      {
+        "pick": "false",
+        "id": 3,
+        "full_name": "Alex R"
+      }
+    ]
+  }
 }
 
 # Server Response to answers
 ## should be encrypted using shared key
 
 {
-  "state": "accepted",
-  "vid_hash": "somehash"
+  "vid_hash": "somehash",
+  "data": {
+    "state": "accepted"
+  }
 }
