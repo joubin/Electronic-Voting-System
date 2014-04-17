@@ -20,6 +20,7 @@ def register():
 	tmp["ssn"] = "700-33-6870"
 	tmp["pin"] = "1234"
 	DATA["userInfo"] = tmp
+	return tmp
 def vote():
 	DATA["state"] = "ballot_response"
 	DATA["vid_hash"] = "917ef7e7be4a84e279b74a257953307f1cff4a2e3d221e363ead528c6b556edb"
@@ -34,11 +35,11 @@ def vote():
 # vs = connect.VotingSystem()
 # MESSAGE = vs._encrypt_RSA('key.pub', str(DATA))
 # print MESSAGE
-MESSAGE = "hello1233\n"
+MESSAGE = register()
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((TCP_IP, TCP_PORT))
-s.send(MESSAGE)
+s.send(str(MESSAGE)+"\n")
 data = s.recv(BUFFER_SIZE)
 s.close()
 # print sys.getsizeof(data),

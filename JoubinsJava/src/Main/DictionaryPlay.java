@@ -1,27 +1,42 @@
 package Main;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import org.apache.commons.codec.binary.Hex;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Created by joubin on 4/16/14.
  */
 public class DictionaryPlay {
 
-    public static void main(String args[]){
+    public static void main(String args[]) throws NoSuchAlgorithmException {
+//        JSONObject myJson = new JSONObject();
+//
+//            myJson.put("state", "register");
+//            myJson.put("vid_hash", "mayhash");
+//        JSONObject userInfo = new JSONObject();
+//            userInfo.put("vid", "user_id");
+//            userInfo.put("ssn", "123-12-2345");
+//            userInfo.put("pin", "1234");
+//            myJson.put("userInfo", userInfo);
+//
+//            System.out.println(myJson.toJSONString());
+//
+//        String send = myJson.toJSONString();
+//
+//        try {
+//            JSONObject myNewString =   (JSONObject)new JSONParser().parse(send);
+//            System.out.print(myNewString.get("vid_hash"));
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
 
-        Map<Object, Object> hm = new HashMap<Object, Object>();
-        Map<Object, Object> hm2 = new HashMap<Object, Object>();
-
-        hm.put("asd", "asd");
-        hm2.put("123", "234");
-
-        hm.put("asd2", hm2);
-        Set<Map.Entry<Object, Object>> set = hm.entrySet();
-
-        for (Map.Entry<Object, Object> me : set) {
-            System.out.println(me.getKey() + " " + me.getValue());
-        }
-       }
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        digest.update("hello".getBytes());
+        digest.update("asd".getBytes());
+        digest.update("qwe".getBytes());
+        char[] shareKey = Hex.encodeHex(digest.digest());
+        System.out.println(shareKey);
+    }
 }

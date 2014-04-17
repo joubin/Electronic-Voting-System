@@ -1,5 +1,7 @@
 package Main;
 
+import org.json.simple.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 /**
@@ -26,13 +28,15 @@ public class Json {
         localMap.put("vid_hash", hash);
     }
 
-    public void addItem(String key, Map m)
+    public void addItem(Object key, Object value)
     {
-        localMap.put(key, m);
+        localMap.put(key, value.toString());
     }
 
-    public Map<Object, Object> getLocalMap() {
-        return localMap;
+    public JSONObject getLocalMap() {
+        JSONObject js = new JSONObject(localMap);
+        return js;
+
     }
 
 }

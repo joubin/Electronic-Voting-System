@@ -1,8 +1,12 @@
 package Main;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+
+
 
 /**
  * Created by joubin on 4/16/14.
@@ -10,26 +14,27 @@ import java.net.Socket;
 public class Server implements Runnable {
     private static final int port = 9999;
     Socket csocket;
-    Server(Socket csocket) {
+    VotingSystem vs;
+
+    Server(Socket csocket, VotingSystem vs) {
+        System.out.print("making a new server\n");
         this.csocket = csocket;
+        this.vs = vs;
+
+
     }
 
     public static void main(String args[])
             throws Exception {
         ServerSocket ssock = new ServerSocket(port);
         System.out.println("Listening");
+        VotingSystem vs = new VotingSystem();
+
+
         while (true) {
             Socket sock = ssock.accept();
-
-
-            //
-
-
-            //
-
-
             System.out.println("Connected");
-            new Thread(new Server(sock)).start();
+            new Thread(new Server(sock, vs)).start();
         }
     }
     public void run() {
@@ -43,21 +48,29 @@ My stuff
 
 
             System.out.println("1");
-            BufferedReader inFromClient = new BufferedReader(new InputStreamReader(this.csocket.getInputStream()));
-            System.out.println("2");
+//            BufferedReader inFromClient = new BufferedReader(new InputStreamReader(this.csocket.getInputStream()));
+            InputStream stream = this.csocket.getInputStream();
+            byte[] bs = new byte[256];
+            int count = stream.read(bs);
+//            byte[] bs = this.csocket.getInputStream();
+            System.out.println(count);
 
-            DataOutputStream outToClient = new DataOutputStream(this.csocket.getOutputStream());
             System.out.println("3");
-            String clientSentence = inFromClient.readLine();
+//            String clientSentence = inFromClient.readLine();
             System.out.println("4");
-            System.out.println("Received: " + clientSentence);
-
-
+//            System.out.println("Received: " + clientSentence);
+            String response = null;
+            try {
+               response =  vs.router(bs);
+            } catch (Exception e) {
+                System.out.println("there was a sql issue");
+                e.printStackTrace();
+            }
   /*
   end my stuff
    */
 
-                pstream.println(" bottles of beer on the wall");
+            pstream.println(response);
             pstream.close();
             csocket.close();
         }
