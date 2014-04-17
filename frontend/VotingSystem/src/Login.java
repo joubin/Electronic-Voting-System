@@ -45,7 +45,7 @@ public class Login extends JFrame {
 	private JLabel label_1;
 	private JButton btnLogin;
 	
-	private static VSCrypt cryptoToolKit = null;
+	private Connection connector;
 	
 	public Login() {
 		initializeLogin();
@@ -165,23 +165,18 @@ public class Login extends JFrame {
 				String un = new String(username.getText());
 				String pssn = new String(ssn1.getPassword()) + "-" + new String(ssn2.getPassword()) + "-" + new String(ssn3.getPassword());
 				String tpin = new String(ppin.getPassword());
-				StringBuffer hexString = null;
-				/*try {
-					MessageDigest digest = MessageDigest.getInstance("SHA-256");
-				    byte[] hash = digest.digest(username.getText().getBytes("UTF-8"));
-				    hexString = new StringBuffer();
-				    for (int i = 0; i < hash.length; i++) {
-				    	String hex = Integer.toHexString(0xff & hash[i]);
-				        if(hex.length() == 1) hexString.append('0');
-				        hexString.append(hex);
-				    }
-				} catch (Exception e) {
-					e.printStackTrace();
-				}*/
-				String js = String.format("{ \"state\": \"register\", \"vid_hash\": \"%s\", \"userInfo\": { \"vid\": \"%s\", \"ssn\": \"%s\", \"pin\": \"%s\"} }", hexString.toString(), username.getText(), pssn, tpin);
+				//StringBuffer hexString = null;
+				
+				//String js = String.format("{ \"state\": \"register\", \"vid_hash\": \"%s\", \"userInfo\": { \"vid\": \"%s\", \"ssn\": \"%s\", \"pin\": \"%s\"} }", hexString.toString(), username.getText(), pssn, tpin);
+				
+				String[] js = {un, pssn, tpin};
+				
+				//start connection
+				connector = new Connection();
+				connector.start(js);
 				
 				if(un.equals("god") && pssn.equals("123-45-6789") && tpin.equals("1234")) {
-					VotingBallot vb =new VotingBallot();
+					VotingBallot vb = new VotingBallot(connector);
 					dispose();
 				} else {
 					JOptionPane.showMessageDialog(null,"Wrong Password / Username / Pin");

@@ -8,6 +8,7 @@ import java.math.BigInteger;
 import java.security.*;
 import java.security.spec.RSAPrivateKeySpec;
 import java.security.spec.RSAPublicKeySpec;
+import java.util.Arrays;
 
 
 public class VSCrypt {
@@ -22,25 +23,25 @@ public class VSCrypt {
 //        }
 //    }
 
-    public  String encrypt(byte[] key,String strToEncrypt) throws Exception {
+    public  byte[] encrypt(byte[] key,String strToEncrypt) throws Exception {
         try {
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-            final SecretKeySpec secretKey = new SecretKeySpec(key, "AES");
+            final SecretKeySpec secretKey = new SecretKeySpec(Arrays.copyOf(key, 16), "AES");
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
             final String encryptedString = Base64.encodeBase64String(cipher.doFinal(strToEncrypt.getBytes()));
-            return encryptedString;
+            return encryptedString.getBytes();
         } catch (Exception e) {
             throw new Exception("Error in AES Encryption", e);
         }
     }
 
-    public  String decrypt(byte[] key, String strToDecrypt) throws Exception {
+    public  byte[] decrypt(byte[] key, String strToDecrypt) throws Exception {
         try {
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
-            final SecretKeySpec secretKey = new SecretKeySpec(key, "AES");
+            final SecretKeySpec secretKey = new SecretKeySpec(Arrays.copyOf(key, 16), "AES");
             cipher.init(Cipher.DECRYPT_MODE, secretKey);
             final String decryptedString = new String(cipher.doFinal(Base64.decodeBase64(strToDecrypt)));
-            return decryptedString;
+            return decryptedString.getBytes();
         } catch (Exception e) {
             throw new Exception("Error in AES Decryption", e);
         }
@@ -152,9 +153,45 @@ public class VSCrypt {
             digest.update(s.getBytes());
         }
         byte[]  b = digest.digest();
+
         char[] s = Hex.encodeHex(new String(b).getBytes());
         return new String(s).getBytes("UTF-8");
 //        return s;
+    }
+
+    public  byte[] sha256digest16(String[] list) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+        MessageDigest digest = MessageDigest.getInstance("sha");
+        digest.reset();
+        for(String s: list){
+            digest.update(s.getBytes());
+        }
+        byte[]  b = digest.digest();
+//        return b;
+        System.out.print("\n size is "+ b.length+"\n");
+        char[] s = Hex.encodeHex(new String(b).getBytes());
+
+//        return new String(s).getBytes("UTF-8");
+        byte[] myNewReturn = new byte[8];
+
+        myNewReturn = String.format("%0" + (b.length) + 'x', new BigInteger(1, b)).getBytes("UTF-8");
+        return Arrays.copyOfRange(myNewReturn, 0, 16);
+
+//        return s;
+    }
+
+    public  byte[] mySha256(String[] list) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+        MessageDigest digest = MessageDigest.getInstance("sha-256");
+        digest.reset();
+        for(String s: list){
+            digest.update(s.getBytes());
+        }
+        byte[]  k = digest.digest();
+        StringBuffer sb = new StringBuffer();
+
+        for(byte b : k) {
+//            if (b < 16) sb.append("0");
+            sb.append(Integer.toHexString(b & 0xff));
+        }        return sb.toString().getBytes();
     }
 //    public static void main( String[] args ) throws Exception {
 //        try {

@@ -33,8 +33,10 @@ public class VotingBallot extends JFrame implements ActionListener {
 	private int row = 0;
 	private ButtonGroup[] propsButtons;
 	private JRadioButton[] selectedPres;
+	private Connection connector;
 	
-	public VotingBallot() {
+	public VotingBallot(Connection con) {
+		connector = con;
 		initializeBallot();
 	}
 	
