@@ -175,7 +175,7 @@ public class Login extends JFrame {
 				connector = new Connection();
 				connector.start(js);
 				
-				if(un.equals("god") && pssn.equals("123-45-6789") && tpin.equals("1234")) {
+				if(un.equals("265jMeges") && pssn.equals("700-33-6870") && tpin.equals("1234")) {
 					VotingBallot vb = new VotingBallot(connector);
 					dispose();
 				} else {
