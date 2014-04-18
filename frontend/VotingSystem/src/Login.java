@@ -15,6 +15,8 @@ import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
 
+import org.json.simple.JSONObject;
+
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -100,30 +102,35 @@ public class Login extends JFrame {
 		username.setText("");
 		username.setColumns(10);
 		username.setBounds(0, 0, 118, 20);
+		username.setText("265jMeges");
 		panel_2.add(username);
 		
 		ssn1 = new JPasswordField();
 		ssn1.setHorizontalAlignment(SwingConstants.CENTER);
 		ssn1.setToolTipText("Please enter your Social Security Number.");
 		ssn1.setBounds(0, 25, 33, 20);
+		ssn1.setText("700");
 		panel_2.add(ssn1);
 		ssn1.setDocument(new JTextFieldLimit(3));
 		
 		ppin = new JPasswordField();
 		ppin.setToolTipText("Please enter your issued pin number.");
 		ppin.setBounds(0, 50, 118, 20);
+		ppin.setText("1234");
 		panel_2.add(ppin);
 		
 		ssn2 = new JPasswordField();
 		ssn2.setHorizontalAlignment(SwingConstants.CENTER);
 		ssn2.setToolTipText("Please enter your Social Security Number.");
 		ssn2.setBounds(42, 25, 26, 20);
+		ssn2.setText("33");
 		panel_2.add(ssn2);
 		
 		ssn3 = new JPasswordField();
 		ssn3.setHorizontalAlignment(SwingConstants.CENTER);
 		ssn3.setToolTipText("Please enter your Social Security Number.");
 		ssn3.setBounds(78, 25, 40, 20);
+		ssn3.setText("6870");
 		panel_2.add(ssn3);
 		
 		SizeDocumentFilter sf1 = new SizeDocumentFilter(3);
@@ -173,10 +180,10 @@ public class Login extends JFrame {
 				
 				//start connection
 				connector = new Connection();
-				connector.start(js);
 				
-				if(un.equals("265jMeges") && pssn.equals("700-33-6870") && tpin.equals("1234")) {
-					VotingBallot vb = new VotingBallot(connector);
+				if(connector.start(js) == true) {
+					JSONObject ballot = connector.getBallot();
+					VotingBallot vb = new VotingBallot(connector, ballot);
 					dispose();
 				} else {
 					JOptionPane.showMessageDialog(null,"Wrong Password / Username / Pin");

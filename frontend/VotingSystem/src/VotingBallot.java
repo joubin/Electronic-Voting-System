@@ -9,12 +9,17 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollBar;
+import javax.swing.JTextArea;
 
 import java.awt.Font;
 
 import javax.swing.border.LineBorder;
 import javax.swing.text.View;
 import javax.swing.JScrollPane;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -24,24 +29,28 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 
 
 public class VotingBallot extends JFrame implements ActionListener {
-	private JParser jp;
+	//private JParser jp;
 	private int row = 0;
 	private ButtonGroup[] propsButtons;
 	private JRadioButton[] selectedPres;
 	private Connection connector;
+	private JSONObject ballot;
 	
-	public VotingBallot(Connection con) {
+	public VotingBallot(Connection con, JSONObject b) {
 		connector = con;
+		ballot = b;
 		initializeBallot();
 	}
 	
 	private void initializeBallot(){
-		jp = new JParser();
+		//jp = new JParser();
 		this.setSize(800,600);
 		this.setTitle("Voting Ballot");
 		this.getContentPane().setBackground(new Color(255, 255, 255));
@@ -94,28 +103,26 @@ public class VotingBallot extends JFrame implements ActionListener {
 		row++;
 		
 		//presidential candidates
-		int sizeOfPres = jp.getPresidentialCandidates().size();
+		ArrayList presidents = (ArrayList) ballot.get("presidential_candidates");
+		int sizeOfPres = presidents.size();
 		JPanel[] presPanels = new JPanel[sizeOfPres];
-		List<PresidentialCandidates> pres = jp.getPresidentialCandidates();
 		ButtonGroup group = new ButtonGroup();
 		selectedPres = new JRadioButton[sizeOfPres];
 		
-		for(int i = 0; i<sizeOfPres; i++){
+		int i = 0;
+		for(Object o : presidents){
 			JPanel ppanel = new JPanel();
 			ppanel.setPreferredSize(new Dimension(790, 25));
+			JSONObject p = stringToJson(o.toString());
 			
-			JLabel pnum = new JLabel(pres.get(i).getPartyAffiliation() + ": ");
-			JLabel msg = new JLabel(pres.get(i).getFullName());
+			JTextArea msg = new JTextArea(p.get("party_affiliation") + ": "+p.get("full_name"));
 			msg.setBounds(260, 14, 263, 14);
-			ppanel.add(pnum);
 			ppanel.add(msg);
 			
 			selectedPres[i] = new JRadioButton("Yes");
 			selectedPres[i].setActionCommand("Yes");
 			group.add(selectedPres[i]);
 			selectedPres[i].setSelected(false);
-		    
-		    //yesButton.addActionListener(this);
 		    
 		    ppanel.add(selectedPres[i]);
 			
@@ -124,8 +131,9 @@ public class VotingBallot extends JFrame implements ActionListener {
 			c.gridy = row;
 			ballot_panel.add(ppanel, c);
 			presPanels[i] = ppanel;
-			row++;
+			row++; i++;
 		}
+		
 		
 		//propspanel
 		JPanel props_panel = new JPanel();
@@ -143,20 +151,32 @@ public class VotingBallot extends JFrame implements ActionListener {
 		row++;
 		
 		//propositions
-		int sizeOfProps = jp.getProposition().size();
+		ArrayList propositions = (ArrayList) ballot.get("proposition");
+		//Iterator<String> props = propositions.iterator();
+		int sizeOfProps = propositions.size();
 		JPanel[] propsPanels = new JPanel[sizeOfProps];
-		List<Proposition> props = jp.getProposition();
+		propsButtons = new ButtonGroup[sizeOfProps];
 		propsButtons = new ButtonGroup[sizeOfProps];
 		
-		for(int j = 0; j<sizeOfProps; j++){
+		int j=0;
+		for(Object o : propositions){
 			JPanel ppanel = new JPanel();
-			ppanel.setPreferredSize(new Dimension(790, 30));
+			ppanel.setPreferredSize(new Dimension(790, 400));
 			
-			JLabel pnum = new JLabel(props.get(j).getPropositionNumber() + ": ");
-			JLabel msg = new JLabel(props.get(j).getQuestion());
-			msg.setBounds(260, 14, 263, 14);
-			ppanel.add(pnum);
-			ppanel.add(msg);
+			JSONObject p = stringToJson(o.toString());
+			//JLabel pnum = new JLabel();
+			JTextArea msg = new JTextArea(p.get("id").toString() + ": "+p.get("question").toString(), 20, 65);
+			
+			//msg.setBounds(260, 14, 263, 14);
+			msg.setFont(new Font("Times New Roman", 14, 14));
+	        msg.setLineWrap(true);
+	        msg.setWrapStyleWord(true);
+	        msg.setOpaque(false);
+	        msg.setEditable(false);
+			//ppanel.add(pnum);
+			//ppanel.add(msg);
+			
+			JLabel givenProp = new JLabel("Proposition number "+(j+1)+":");
 			
 			JRadioButton yesButton = new JRadioButton("Yes");
 			yesButton.setActionCommand("Yes");
@@ -174,19 +194,22 @@ public class VotingBallot extends JFrame implements ActionListener {
 		    propsButtons[j].add(abButton);
 		    abButton.setSelected(true);
 		    
-		    /*yesButton.addActionListener(this);
-		    noButton.addActionListener(this);
-		    abButton.addActionListener(this);*/
-		    
+		    ppanel.add(givenProp);
 		    ppanel.add(yesButton);
 		    ppanel.add(noButton);
 		    ppanel.add(abButton);
 			
+		    JScrollPane bScroller = new JScrollPane(msg, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			bScroller.setSize(790, 150);
+			ppanel.setAutoscrolls(false);
+		    
+			ppanel.add(bScroller);
 			c.fill = GridBagConstraints.HORIZONTAL;
 			c.gridx = 0;
 			c.gridy = row;
 			ballot_panel.add(ppanel, c);
 			propsPanels[j] = ppanel;
+			j++;
 			row++;
 		}
 		
@@ -211,18 +234,53 @@ public class VotingBallot extends JFrame implements ActionListener {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		for(int i = 0; i < selectedPres.length; i++){
+		JSONObject finalBallot = new JSONObject();
+		ArrayList pres = new ArrayList();
+		ArrayList props = new ArrayList();
+		
+		ArrayList presidents = (ArrayList) ballot.get("presidential_candidates");
+		int i = 0;
+		for(Object o : presidents){
+			JSONObject pr = stringToJson(o.toString());
+			JSONObject a = new JSONObject();
 			if(selectedPres[i].isSelected()){
-				System.out.println(i);
+				a.put("pick", "true");
+			}else{
+				a.put("pick", "false");
 			}
+			a.put("id", pr.get("id"));
+			a.put("full_name", pr.get("full_name"));
+			pres.add(a);
+			i++;
 		}
 		
-		for(int i = 0; i < propsButtons.length; i++){
-			String s = getSelectedButtonText(propsButtons[i]);
-			System.out.println(s);
+		ArrayList propositions = (ArrayList) ballot.get("proposition");
+		int j = 0;
+		for(Object o : propositions){
+			String s = getSelectedButtonText(propsButtons[j]);
+			JSONObject pr = stringToJson(o.toString());
+			JSONObject a = new JSONObject();
+			a.put("proposition_number", pr.get("proposition_number"));
+			if(s.equals("Yes")){
+				a.put("answer", "1");
+			}else if(s.equals("No")){
+				a.put("answer", "2");
+			}else{
+				a.put("answer", "3");
+			}
+			a.put("id", pr.get("id"));
+			props.add(a);
+			j++;
 		}
+		
+		finalBallot.put("state", "ballot_response");
+		finalBallot.put("proposition", props);
+		finalBallot.put("presidential_candidates", pres);
+		System.out.println("calling connector" + finalBallot.toJSONString());
+		connector.sendBallot(finalBallot);
 	}
 	
 	public String getSelectedButtonText(ButtonGroup buttonGroup) {
@@ -235,5 +293,16 @@ public class VotingBallot extends JFrame implements ActionListener {
         }
 
         return null;
+    }
+	
+	public static JSONObject stringToJson(String s){
+        JSONObject myNewString = null;
+        try {
+            myNewString =   (JSONObject)new JSONParser().parse(s);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Could not read json");
+        }
+        return myNewString;
     }
 }
