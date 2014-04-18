@@ -42,6 +42,17 @@ public class DB_handler {
         return null;
     }
 
+
+
+    public boolean setValues(String sql){
+        try {
+            return stmt.executeUpdate(sql) == 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public void cleanup(){
         try {
             stmt.close();

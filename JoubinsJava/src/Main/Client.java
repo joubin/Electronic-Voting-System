@@ -1,6 +1,8 @@
 package Main;
 
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -67,19 +69,36 @@ class Client
             System.out.println("\nThis is my vid hash "+ new String(vid_hash));
             dataToSend.put("vid_hash", new String(vid_hash)); // packet to go out. Do not encrypt
             System.out.println("going to do aes encrypt");
+
             JSONObject data = new JSONObject();
-            data.put("vid", vid);
-            data.put("ssn", ssn);
-            data.put("pin", pin);
+
+            JSONObject userInfo = new JSONObject();
+            userInfo.put("vid", vid);
+            userInfo.put("ssn", ssn);
+            userInfo.put("pin", pin);
+            data.put("userInfo", userInfo);
+            data.put("state", "register");
             byte[] encryptedData = toolKit.encrypt(finalKey, data.toString());
-            dataToSend.put("userInfo", new String(encryptedData));
+            dataToSend.put("data", new String(encryptedData));
 //            outToServer.write(toolKit.encrypt(finalKey, dataToSend.toJSONString()));
             outToServer.write(dataToSend.toString().getBytes());
             returnedString = inFromServer.readLine();
-            System.out.print("\n finally we have: " + new String(finalKey));
-
+            JSONObject returnedJson = stringToJson(returnedString);
+            System.out.println(returnedJson.toJSONString());
         }
 
+
+
+    public static JSONObject stringToJson(String s){
+        JSONObject myNewString = null;
+        try {
+            myNewString =   (JSONObject)new JSONParser().parse(s);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            System.out.println("Could not read json");
+        }
+        return myNewString;
+    }
 //        public void something() throws Exception {
 //            JSONObject objectToEncrypt =  new JSONObject();
 //           String[] myVIDHash = {"265jMeges"};
