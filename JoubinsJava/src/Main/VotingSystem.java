@@ -8,10 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.Normalizer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by joubin on 4/16/14.
@@ -36,8 +33,9 @@ public class VotingSystem {
         String decryptedPacket = null;
         JSONObject packetObject = null;
         String vid_hash = null;
+        String packetAsString = new String(packet);
+
         try {
-            String packetAsString = new String(packet);
             if (packetAsString.contains("vid_hash")){
                 System.out.print("AES Encrypted");
                 System.out.print("Doing the right thing so ill exit");
@@ -56,7 +54,7 @@ public class VotingSystem {
                 packetObject = userInfoObject;
 
             }else{
-            byte[] decryptedByteArray = cryptoToolKit.rsaDecrypt(packet);
+            byte[] decryptedByteArray = cryptoToolKit.rsaDecrypt(Arrays.copyOf(packet, 256));
                 Random rand = new Random();
                 String incoming = new String(decryptedByteArray);
                 String[] incomingArr = incoming.split(",");
@@ -75,7 +73,8 @@ public class VotingSystem {
 
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Could not decrypt");
+            System.out.println("Could not decrypt\n" + packetAsString);
+            System.out.println(packetAsString.getBytes().length);
             return null;
         }
         String state;
@@ -88,7 +87,7 @@ public class VotingSystem {
         }else if (state.equals("ballot_response")){
             return this.ballot_response(packetObject, vid_hash);
         }else if (state.equals("getReuslts")){
-            //send final results
+            return null;
         }
         return null;
     }

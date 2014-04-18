@@ -1,8 +1,6 @@
 package Main;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -39,43 +37,76 @@ public class Server implements Runnable {
     }
     public void run() {
         try {
+//
+//            PrintStream pstream = new PrintStream
+//                    (csocket.getOutputStream());
+///*
+//My stuff
+//*/
+//
+//
+////            System.out.println("1");
+////            BufferedReader inFromClient = new BufferedReader(new InputStreamReader(this.csocket.getInputStream()));
+//            InputStream stream = this.csocket.getInputStream();
+//            byte[] bs = new byte[256];
+//            int count = stream.read(bs);
+////            byte[] bs = this.csocket.getInputStream();
+////            System.out.println(count);
+//
+////            System.out.println("3");
+////            String clientSentence = inFromClient.readLine();
+////            System.out.println("4");
+////            System.out.println("Received: " + clientSentence);
+//            String response = null;
+//            try {
+//                System.out.println(new String(bs));
+//               response =  vs.router(bs);
+//            } catch (Exception e) {
+//                System.out.println("there was a sql issue");
+//                e.printStackTrace();
+//            }
+//  /*
+//  end my stuff
+//   */
+//
+//            pstream.println(response);
+//            pstream.close();
+//            csocket.close();
 
-            PrintStream pstream = new PrintStream
-                    (csocket.getOutputStream());
-/*
-My stuff
-*/
+            InputStream is = null;
+            FileOutputStream fos = null;
+            BufferedOutputStream bos = null;
+            int bufferSize = 0;
 
 
-//            System.out.println("1");
-//            BufferedReader inFromClient = new BufferedReader(new InputStreamReader(this.csocket.getInputStream()));
-            InputStream stream = this.csocket.getInputStream();
-            byte[] bs = new byte[256];
-            int count = stream.read(bs);
-//            byte[] bs = this.csocket.getInputStream();
-//            System.out.println(count);
 
-//            System.out.println("3");
-//            String clientSentence = inFromClient.readLine();
-//            System.out.println("4");
-//            System.out.println("Received: " + clientSentence);
-            String response = null;
             try {
-               response =  vs.router(bs);
-            } catch (Exception e) {
-                System.out.println("there was a sql issue");
-                e.printStackTrace();
-            }
-  /*
-  end my stuff
-   */
+                is = csocket.getInputStream();
 
-            pstream.println(response);
-            pstream.close();
+                bufferSize = csocket.getReceiveBufferSize();
+                System.out.println("Buffer size: " + bufferSize);
+            } catch (IOException ex) {
+                System.out.println("Can't get socket input stream. ");
+            }
+
+            DataOutputStream outToServer = new DataOutputStream(csocket.getOutputStream());
+
+            byte[] bytes = new byte[bufferSize];
+
+            int count;
+            count = is.read(bytes);
+            String sendBack = vs.router(bytes);
+            outToServer.write(sendBack.getBytes());
+
+            outToServer.flush();
+            outToServer.close();
+            is.close();
             csocket.close();
         }
         catch (IOException e) {
             System.out.println(e);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
