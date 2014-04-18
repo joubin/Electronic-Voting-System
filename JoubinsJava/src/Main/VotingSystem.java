@@ -6,6 +6,7 @@ import org.json.simple.parser.ParseException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -85,7 +86,7 @@ public class VotingSystem {
             // run register
             return this.register(packetObject, vid_hash);
         }else if (state.equals("ballot_response")){
-            //run ballot_response
+            return this.ballot_response(packetObject, vid_hash);
         }else if (state.equals("getReuslts")){
             //send final results
         }
@@ -152,8 +153,72 @@ public class VotingSystem {
     }
 
 
-    private boolean ballot_response(JSONObject packet){
-        return false;
+    private String ballot_response(JSONObject packet, String vid_hash){
+        ArrayList proposition = (ArrayList) packet.get("proposition");
+        ArrayList presidential_candidates = (ArrayList) packet.get("presidential_candidates");
+        int runs = 0;
+        int flags = 0;
+        for (Object o : proposition){
+            runs++;
+            JSONObject tmp = stringToJson(o.toString());
+            String proposition_number = tmp.get("proposition_number").toString();
+            String answer = tmp.get("answer").toString();
+            String id = tmp.get("id").toString();
+            DB_handler db = new DB_handler();
+            java.util.Date date= new java.util.Date();
+
+            String sql = "insert into prop_votes values(\""+vid_hash+"\", \""+answer+"\", \""+new Timestamp(date.getTime())+"\", \""+id+"\")";
+            boolean insert = db.setValues(sql);
+            if (insert)
+                  flags++;
+            db.cleanup();
+
+        }
+         int runs2 = 0;
+        int flags2 = 0;
+        boolean winner = false;
+        String full_name = null;
+        String id = null;
+        for (Object o : presidential_candidates){
+            runs2++;
+            JSONObject tmp = stringToJson(o.toString());
+            if(tmp.get("pick").toString().compareTo("true") == 0){
+               if (!winner){
+                   winner = true;
+                   full_name = tmp.get("full_name").toString();
+                   id = tmp.get("id").toString();
+               }
+               else{
+                   return null;
+               }
+            }
+
+        }
+        DB_handler db = new DB_handler();
+        String sql = "insert into candidate_votes values(\""+vid_hash+"\",\""+id+"\")";
+        boolean presidentSet = db.setValues(sql);
+        db.cleanup();
+        boolean checkProps = runs == flags;
+        if (presidentSet && checkProps){
+            // make sure this person can not vote again
+            db = new DB_handler();
+            sql = "update voters_of_america set allowed_to_vote = 0 where vid_hash = \""+vid_hash+"\"";
+            db.setValues(sql);
+            db.cleanup();
+            JSONObject dataToSend = new JSONObject();
+            dataToSend.put("vid_hash", vid_hash);
+            JSONObject data = new JSONObject();
+            data.put("state", "accepted");
+            try {
+                byte[] dataEncrypted = cryptoToolKit.encrypt(activeUsers.get(vid_hash).toString().getBytes(), data.toString());
+                dataToSend.put("data", new String(dataEncrypted));
+                String returnVal = new String(dataToSend.toJSONString());
+                return returnVal;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
     private JSONObject setupBallot()  {
