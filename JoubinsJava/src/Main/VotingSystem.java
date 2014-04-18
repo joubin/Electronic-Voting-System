@@ -152,38 +152,45 @@ public class VotingSystem {
     }
 
 
+    private boolean ballot_response(JSONObject packet){
+        return false;
+    }
+
     private JSONObject setupBallot()  {
         JSONObject ballotObject = new JSONObject();
         ArrayList propositions = new ArrayList();
         ArrayList presidents = new ArrayList();
 
-        String sql = "select * from proposition;";
         DB_handler db = new DB_handler();
+        String sql = "select * from proposition limit 10;";
+
         ResultSet ballotsTabel = db.getResult(sql);
-        sql = "select * from candidates;";
 
         try {
             while (ballotsTabel.next()){
                 JSONObject tmp = new JSONObject();
-                tmp.put("id", ballotsTabel.getArray(0));
-                tmp.put("proposition_number", ballotsTabel.getArray(1));
-                tmp.put("id", ballotsTabel.getArray(2));
+                tmp.put("id", ballotsTabel.getInt("id"));
+                tmp.put("proposition_number", ballotsTabel.getString("proposition_number"));
+                tmp.put("question", ballotsTabel.getString("proposition_question"));
                 propositions.add(tmp);
 
             }
+            System.out.println(propositions.toString());
         } catch (SQLException e) {
             e.printStackTrace();
         }
         db.cleanup();
         db = new DB_handler();
+        sql = "select * from candidates;";
+
         ResultSet presidentsTable = db.getResult(sql);
 
         try {
             while (presidentsTable.next()){
                 JSONObject tmp = new JSONObject();
-                tmp.put("id", presidentsTable.getArray(0));
-                tmp.put("proposition_number", presidentsTable.getArray(1));
-                tmp.put("id", presidentsTable.getArray(2));
+                tmp.put("id", presidentsTable.getString("id"));
+                tmp.put("full_name", presidentsTable.getString("full_name"));
+                tmp.put("party_affiliation", presidentsTable.getString("party_affiliation"));
                 presidents.add(tmp);
             }
         } catch (SQLException e) {
