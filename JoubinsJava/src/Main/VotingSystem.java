@@ -83,7 +83,7 @@ public class VotingSystem {
 
         if (state.equals("register")) {
             // run register
-            this.register(packetObject, vid_hash);
+            return this.register(packetObject, vid_hash);
         }else if (state.equals("ballot_response")){
             //run ballot_response
         }else if (state.equals("getReuslts")){
@@ -92,7 +92,7 @@ public class VotingSystem {
         return null;
     }
 
-    private byte[] register(JSONObject packet, String vid_hash) throws Exception {
+    private String register(JSONObject packet, String vid_hash) throws Exception {
         String user_hash = vid_hash;
         JSONObject userInfo = (JSONObject) packet.get("userInfo");
         String userProvided_pin = userInfo.get("pin").toString();
@@ -131,9 +131,9 @@ public class VotingSystem {
                 String returnPacketString = returnPacket.toString();
                 try {
                    byte[] encryptedData = cryptoToolKit.encrypt(activeUsers.get(vid_hash).toString().getBytes(), ballot.toString());
-                    returnPacket.put("data", encryptedData);
+                    returnPacket.put("data", new String(encryptedData));
                     System.out.println("\nSending the ballots");
-                    return returnPacket.toString().getBytes();
+                    return returnPacket.toString();
                 } catch (Exception e) {
                     System.out.println("Could not encrypt the string going out client " + e);
                     e.printStackTrace();
@@ -147,7 +147,7 @@ public class VotingSystem {
 
 
 
-        return returnPacket.toJSONString().getBytes();
+        return returnPacket.toJSONString();
 
     }
 

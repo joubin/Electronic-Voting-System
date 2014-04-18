@@ -83,6 +83,7 @@ class Client
 //            outToServer.write(toolKit.encrypt(finalKey, dataToSend.toJSONString()));
             outToServer.write(dataToSend.toString().getBytes());
             returnedString = inFromServer.readLine();
+            System.out.println(returnedString);
             JSONObject returnedJson = stringToJson(returnedString);
             System.out.println(returnedJson.toJSONString());
         }
