@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Connection {
-	private String host = "24.10.116.146";
+	private String host = "10.114.105.175";
 	private int port = 9999;
 	private VSCrypt toolKit;
 	private JSONObject ballot;
@@ -111,27 +111,27 @@ public class Connection {
 	@SuppressWarnings("unchecked")
 	public boolean sendBallot(JSONObject finalBallot){
 		try{
-			JSONObject dataToSend = new JSONObject();
+			JSONObject ballotToSend = new JSONObject();
 			Socket clientSocket = new Socket(host, 9999);
 			DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
 	        BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 			
-			byte[] encryptedData = toolKit.encrypt(finalKey, finalBallot.toString());
+			byte[] encryptedData = toolKit.encrypt(finalKey, finalBallot.toJSONString());
 			
-			dataToSend.put("vid_hash", new String(vid_hash));
-			dataToSend.put("data", new String(encryptedData));
-			System.out.println("Ballot being sent: " + dataToSend.toString());
-			//byte[] dataToSend = ballotToSend.toString().getBytes();
-			//System.out.println(dataToSend.length);
-			outToServer.write(dataToSend.toString().getBytes());
+			ballotToSend.put("vid_hash", new String(vid_hash));
+			ballotToSend.put("data", new String(encryptedData));
+			System.out.println("Ballot being sent: " + ballotToSend.toString());
+			byte[] dataToSend = ballotToSend.toString().getBytes();
+			System.out.println(dataToSend.length);
+			outToServer.write(dataToSend);
             String returnedString = inFromServer.readLine();
             
             System.out.println(returnedString);
             JSONObject returnedJson = stringToJson(returnedString);
             System.out.println(returnedJson.toJSONString());
             
-            /*String string = new String(returnedJson.get("data").toString());
-            Map<Object, Object> activeUsers = new HashMap<Object, Object>();
+            String string = new String(returnedJson.get("data").toString());
+           // Map<Object, Object> activeUsers = new HashMap<Object, Object>();
             String normalized_string = Normalizer.normalize(string, Normalizer.Form.NFD).replaceAll("\u0000", "");
             System.out.println(normalized_string);
             //JSONObject packetObject = stringToJson(normalized_string);
@@ -143,7 +143,7 @@ public class Connection {
             ballot = new JSONObject();
             ballot = stringToJson(decryptedStuff.toString());
             System.out.println("key is: "+new String(finalKey)+"\nvid_hash is: "+vid_hash +"\nuser info is "+ballot.toJSONString());
-			*/
+			
 			return true;
 		}catch(Exception e){
 			System.out.println("this"+e.getStackTrace());

@@ -251,7 +251,7 @@ public class VotingBallot extends JFrame implements ActionListener {
 			}else{
 				a.put("pick", "false");
 			}
-			a.put("id", pr.get("id"));
+			a.put("id", Integer.parseInt(pr.get("id").toString()));
 			a.put("full_name", pr.get("full_name"));
 			pres.add(a);
 			i++;
