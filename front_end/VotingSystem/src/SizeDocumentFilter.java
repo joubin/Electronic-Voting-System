@@ -9,6 +9,8 @@ import javax.swing.text.DocumentFilter.FilterBypass;
 import javax.swing.text.JTextComponent;
 
 /**
+ * 	Author: Rob Camick
+ * 	Taken from: http://tips4java.wordpress.com/2009/10/25/size-document-filter/
  *  A DocumentFilter that allows you to control the maximum number of
  *  characters that can be added to the Document. When the Document is
  *  full you can optionally tab to the next component to speed data entry.

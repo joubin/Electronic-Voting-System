@@ -6,6 +6,8 @@ import javax.swing.UIManager;
 import javax.swing.text.*;
 
 /**
+ * 	Author: Rob Camick
+ * 	Taken from: http://tips4java.wordpress.com/2009/10/25/size-document-filter/
  *  A single DocumentFilter can be set on an AbstractDocument. There may be
  *  times when you wish to perform multiple filtering of the data as it is
  *  added to a Document. By extending the ChainedDocumentFilter instead of
