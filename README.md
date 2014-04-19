@@ -1,3 +1,0 @@
-CSC 250 CSUS Electronic Voting System
-
-To use this system you must ...
