@@ -157,6 +157,7 @@ public class VotingSystem {
         ArrayList presidential_candidates = (ArrayList) packet.get("presidential_candidates");
         int runs = 0;
         int flags = 0;
+
         for (Object o : proposition){
             runs++;
             JSONObject tmp = stringToJson(o.toString());
@@ -178,14 +179,16 @@ public class VotingSystem {
         boolean winner = false;
         String full_name = null;
         String id = null;
+
         for (Object o : presidential_candidates){
             runs2++;
             JSONObject tmp = stringToJson(o.toString());
             if(tmp.get("pick").toString().compareTo("true") == 0){
-               if (!winner){
+                if (!winner){
                    winner = true;
                    full_name = tmp.get("full_name").toString();
                    id = tmp.get("id").toString();
+                   System.out.println(id);
                }
                else{
                    return null;
@@ -194,14 +197,14 @@ public class VotingSystem {
 
         }
         DB_handler db = new DB_handler();
-        String sql = "insert into candidate_votes values(\""+vid_hash+"\",\""+id+"\")";
+        String sql = "insert into candidate_votes (VID_HASH_voters_of_america, id_candidates) values(\""+vid_hash+"\",\""+id+"\")";
         boolean presidentSet = db.setValues(sql);
         db.cleanup();
         boolean checkProps = runs == flags;
         if (presidentSet && checkProps){
             // make sure this person can not vote again
             db = new DB_handler();
-            sql = "update voters_of_america set allowed_to_vote = 0 where vid_hash = \""+vid_hash+"\"";
+            sql = "update voters_of_america set allow_to_vote = 0 where vid_hash = \""+vid_hash+"\"";
             db.setValues(sql);
             db.cleanup();
             JSONObject dataToSend = new JSONObject();

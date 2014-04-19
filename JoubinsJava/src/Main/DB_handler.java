@@ -12,7 +12,7 @@ public class DB_handler {
     private Statement stmt = null;
     //  Database credentials
     private static final String USER = "root";
-    private static final String PASS = "joubin";
+    private static final String PASS = "joubin03";
 
     public DB_handler() {
         try {
