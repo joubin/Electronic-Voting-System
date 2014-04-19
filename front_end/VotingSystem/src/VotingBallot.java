@@ -16,6 +16,7 @@ import java.awt.Font;
 import javax.swing.border.LineBorder;
 import javax.swing.text.View;
 import javax.swing.JScrollPane;
+import javax.swing.JOptionPane;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -280,7 +281,11 @@ public class VotingBallot extends JFrame implements ActionListener {
 		finalBallot.put("proposition", props);
 		finalBallot.put("presidential_candidates", pres);
 		System.out.println("calling connector" + finalBallot.toJSONString());
-		connector.sendBallot(finalBallot);
+		if(connector.sendBallot(finalBallot) == true){
+			JOptionPane.showMessageDialog(this, "Vote Accepted!");
+		}else{
+			JOptionPane.showMessageDialog(this, "Already Voted!");
+		}
 	}
 	
 	public String getSelectedButtonText(ButtonGroup buttonGroup) {

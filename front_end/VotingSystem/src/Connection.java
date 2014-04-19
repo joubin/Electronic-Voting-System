@@ -143,6 +143,9 @@ public class Connection {
             ballot = new JSONObject();
             ballot = stringToJson(decryptedStuff.toString());
             System.out.println("key is: "+new String(finalKey)+"\nvid_hash is: "+vid_hash +"\nuser info is "+ballot.toJSONString());
+						if(!ballot.get("state").toString().equals("accepted")){
+							return false;
+						}
 			
 			return true;
 		}catch(Exception e){
