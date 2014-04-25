@@ -1,4 +1,4 @@
-package BackEnd;
+package Server;
 
 import java.io.*;
 import java.net.ServerSocket;
