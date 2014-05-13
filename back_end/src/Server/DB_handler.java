@@ -7,7 +7,7 @@ import java.sql.*;
 public class DB_handler {
 
     private static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-    private static final String DB_URL = "jdbc:mysql://10.114.127.117/votingsystem";
+    private static final String DB_URL = "jdbc:mysql://10.114.119.114/votingsystem";
     private Connection conn = null;
     private Statement stmt = null;
     //  Database credentials

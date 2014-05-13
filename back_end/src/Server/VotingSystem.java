@@ -168,7 +168,12 @@ public class VotingSystem {
             java.util.Date date= new java.util.Date();
 
             String sql = "insert into prop_votes values(\""+vid_hash+"\", \""+answer+"\", \""+new Timestamp(date.getTime())+"\", \""+id+"\")";
-            boolean insert = db.setValues(sql);
+            boolean insert = false;
+            try {
+                 insert = db.setValues(sql);
+            }catch (Exception e){
+                insert = false;
+            }
             if (insert)
                   flags++;
             db.cleanup();
@@ -198,7 +203,12 @@ public class VotingSystem {
         }
         DB_handler db = new DB_handler();
         String sql = "insert into candidate_votes (VID_HASH_voters_of_america, id_candidates) values(\""+vid_hash+"\",\""+id+"\")";
-        boolean presidentSet = db.setValues(sql);
+        boolean presidentSet = false;
+        try {
+            presidentSet = db.setValues(sql);
+        } catch (Exception E){
+            presidentSet = false;
+        }
         db.cleanup();
         boolean checkProps = runs == flags;
         if (presidentSet && checkProps){
@@ -220,7 +230,14 @@ public class VotingSystem {
                 e.printStackTrace();
             }
         }
-        return null;
+        JSONObject dataToSend = new JSONObject();
+        dataToSend.put("vid_hash", vid_hash);
+        dataToSend.put("state", "error");
+        dataToSend.put("data", null);
+        String returnVal = new String(dataToSend.toJSONString());
+
+
+        return returnVal;
     }
 
     private JSONObject setupBallot()  {
